@@ -14,7 +14,14 @@
 
   onMount(() => {
     surveillance.loadRegistry();
-    surveillance.loadPathogen('sars-cov-2');
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash.replace('#', '');
+      const initial = params.get('pathogen') || hash || 'sars-cov-2';
+      surveillance.loadPathogen(initial);
+    } else {
+      surveillance.loadPathogen('sars-cov-2');
+    }
   });
 </script>
 

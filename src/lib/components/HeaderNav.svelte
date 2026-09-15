@@ -14,6 +14,11 @@
   function onSelectPathogen(e: Event) {
     const select = e.target as HTMLSelectElement;
     surveillance.loadPathogen(select.value);
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('pathogen', select.value);
+      window.history.replaceState({}, '', url.toString());
+    }
   }
 </script>
 
