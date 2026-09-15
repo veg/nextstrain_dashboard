@@ -32,7 +32,7 @@
     surveillance.setCurrentDate(val);
   }
 
-  const KEYFRAMES = [
+  const SARS_KEYFRAMES = [
     { label: 'Alpha', date: 2020.95, codon: 501 },
     { label: 'Delta', date: 2021.45, codon: 452 },
     { label: 'BA.1', date: 2021.90, codon: 484 },
@@ -40,6 +40,17 @@
     { label: 'JN.1', date: 2023.85, codon: 455 },
     { label: 'KP.3', date: 2024.35, codon: 456 },
   ];
+
+  const H5N1_KEYFRAMES = [
+    { label: 'Caprine Spillover', date: 2024.15, codon: 143 },
+    { label: 'Texas Dairy Index', date: 2024.19, codon: 143 },
+    { label: 'Bovine Expansion', date: 2024.22, codon: 143 },
+    { label: 'Active Surveillance', date: 2024.26, codon: 143 },
+  ];
+
+  let currentKeyframes = $derived(
+    surveillance.currentPathogen === 'avian-flu-h5n1' ? H5N1_KEYFRAMES : SARS_KEYFRAMES
+  );
 </script>
 
 <div class="h-16 border-t border-slate-800 bg-dark-900/95 backdrop-blur px-6 flex items-center justify-between select-none z-30">
@@ -113,7 +124,7 @@
 
     <!-- Keyframe Markers -->
     <div class="flex items-center justify-between px-1">
-      {#each KEYFRAMES as kf}
+      {#each currentKeyframes as kf}
         {#if kf.date >= surveillance.timeRange[0] && kf.date <= surveillance.timeRange[1]}
           <button
             onclick={() => surveillance.jumpToKeyframe(kf.date, kf.codon)}

@@ -10,7 +10,7 @@ dist/
 
 # Local cache & intermediate data
 state/
-data/
+/data/
 tmp/
 *.tmp
 *.log

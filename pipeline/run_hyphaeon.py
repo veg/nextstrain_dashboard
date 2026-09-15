@@ -38,6 +38,9 @@ def run_hyphaeon_pipeline(
     print(f"HyphAeon Analytical Engine: Mining Selection Dynamics for '{pathogen_id}'")
     print("=" * 70)
 
+    if protein_length == 1273 and (gene.lower() == "ha" or "flu" in pathogen_id.lower()):
+        protein_length = 568
+
     work_dir = os.path.join(output_dir, "hyphaeon_work")
     os.makedirs(work_dir, exist_ok=True)
     temp_prefix = os.path.join(work_dir, f"{gene}_temporal")

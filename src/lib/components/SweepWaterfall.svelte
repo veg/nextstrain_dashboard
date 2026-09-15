@@ -7,6 +7,34 @@
   let container: HTMLDivElement;
   let hoveredCodonInfo: any = $state(null);
 
+  function getDisplayCodons(vData: any, mode: string): number[] {
+    if (!vData || !vData.codons) return [];
+    const { codons, confirmed_sweeps = [], rescued_sweeps = [], surveillance_codons = [] } = vData;
+    let list: number[] = [];
+
+    if (mode === 'confirmed') {
+      const confSet = new Set(confirmed_sweeps.map((s: any) => s.codon));
+      list = codons.filter((c: number) => confSet.has(c));
+    } else if (mode === 'rescued') {
+      const rescSet = new Set(rescued_sweeps.map((s: any) => s.codon));
+      list = codons.filter((c: number) => rescSet.has(c));
+    } else {
+      list = codons;
+    }
+
+    // If filter mode returns very few codons (< 3), supplement with surveillance codons or variable codons
+    if (list.length < 3) {
+      if (mode === 'confirmed' && surveillance_codons.length) {
+        const fullSet = new Set([...list, ...surveillance_codons]);
+        list = codons.filter((c: number) => fullSet.has(c));
+      }
+      if (list.length < 3) {
+        list = codons;
+      }
+    }
+    return list;
+  }
+
   function renderWaterfall() {
     if (!canvas || !container) return;
     const ctx = canvas.getContext('2d');
@@ -22,15 +50,21 @@
     ctx.clearRect(0, 0, width, height);
 
     const vData = surveillance.velocityMatrix;
-    if (!vData || !vData.codons.length || !vData.time_points.length) {
+    if (!vData || !vData.codons?.length || !vData.time_points?.length) {
       ctx.fillStyle = '#64748b';
       ctx.font = '12px Inter, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Loading HyphAeon Selection Velocity Matrix...', width / 2, height / 2);
+      ctx.fillText(
+        surveillance.isLoading
+          ? `Loading HyphAeon Selection Velocity for ${surveillance.currentPathogen}...`
+          : `No Velocity Matrix available for ${surveillance.currentPathogen}`,
+        width / 2,
+        height / 2
+      );
       return;
     }
 
-    const { codons, time_points, matrix, domains, confirmed_sweeps, rescued_sweeps } = vData;
+    const { codons, time_points, matrix, domains } = vData;
     const padding = { top: 25, right: 30, bottom: 25, left: 60 };
     const domainWidth = 12;
 
@@ -41,40 +75,31 @@
     const tMin = time_points[0];
     const tMax = time_points[time_points.length - 1];
 
-    // Filter codons based on sweepFilterMode
-    let displayCodons: number[] = [];
-    if (surveillance.sweepFilterMode === 'confirmed') {
-      const confSet = new Set(confirmed_sweeps.map(s => s.codon));
-      displayCodons = codons.filter(c => confSet.has(c));
-    } else if (surveillance.sweepFilterMode === 'rescued') {
-      const rescSet = new Set(rescued_sweeps.map(s => s.codon));
-      displayCodons = codons.filter(c => rescSet.has(c));
-    } else {
-      displayCodons = codons;
-    }
-
-    if (!displayCodons.length) {
-      displayCodons = codons.slice(0, 60); // fallback
-    }
-
+    const displayCodons = getDisplayCodons(vData, surveillance.sweepFilterMode);
     const nCodons = displayCodons.length;
-    const cellH = Math.max(2, plotH / nCodons);
-    const cellW = plotW / time_points.length;
+    const cellH = Math.max(2, plotH / Math.max(1, nCodons));
+    const cellW = plotW / Math.max(1, time_points.length);
 
-    // 1. Draw Domain Band on the Left
-    const minCodon = Math.min(...displayCodons);
-    const maxCodon = Math.max(...displayCodons);
-    for (const domain of domains) {
-      const dStart = Math.max(minCodon, domain.start);
-      const dEnd = Math.min(maxCodon, domain.end);
-      if (dStart > maxCodon || dEnd < minCodon) continue;
+    // 1. Draw Domain Band on the Left (aligned to displayed codon rows)
+    if (domains && domains.length) {
+      for (const domain of domains) {
+        const matchingIndices: number[] = [];
+        for (let i = 0; i < nCodons; i++) {
+          if (displayCodons[i] >= domain.start && displayCodons[i] <= domain.end) {
+            matchingIndices.push(i);
+          }
+        }
+        if (!matchingIndices.length) continue;
 
-      const yStart = padding.top + ((dStart - minCodon) / Math.max(1, maxCodon - minCodon)) * plotH;
-      const yEnd = padding.top + ((dEnd - minCodon) / Math.max(1, maxCodon - minCodon)) * plotH;
-      const h = Math.max(3, yEnd - yStart);
+        const firstIdx = matchingIndices[0];
+        const lastIdx = matchingIndices[matchingIndices.length - 1];
+        const yStart = padding.top + firstIdx * cellH;
+        const yEnd = padding.top + (lastIdx + 1) * cellH;
+        const h = Math.max(4, yEnd - yStart);
 
-      ctx.fillStyle = domain.color || '#3b82f6';
-      ctx.fillRect(padding.left, yStart, domainWidth, h);
+        ctx.fillStyle = domain.color || '#3b82f6';
+        ctx.fillRect(padding.left, yStart, domainWidth, h);
+      }
     }
 
     // 2. Draw Velocity Heatmap Cells
@@ -95,7 +120,7 @@
 
       for (let tIdx = 0; tIdx < time_points.length; tIdx++) {
         const x = plotX + tIdx * cellW;
-        const vel = row[tIdx] || 0;
+        const vel = row ? (row[tIdx] || 0) : 0;
         if (vel > 0.0005) {
           ctx.fillStyle = getVelocityColor(vel, 0.035);
           ctx.fillRect(x, y, Math.ceil(cellW), Math.ceil(cellH));
@@ -111,35 +136,24 @@
       }
     }
 
-    // 3. Time Grid Line & Labels
-    ctx.fillStyle = '#64748b';
-    ctx.font = '10px JetBrains Mono, monospace';
-    ctx.textAlign = 'center';
-    const nTicks = 5;
-    for (let i = 0; i <= nTicks; i++) {
-      const t = tMin + (i / nTicks) * (tMax - tMin);
-      const x = plotX + (i / nTicks) * plotW;
-      ctx.fillText(t.toFixed(1), x, height - 8);
-    }
+    // 3. Draw Temporal Cursor Line
+    const cursorProgress = (surveillance.currentDate - tMin) / Math.max(0.01, tMax - tMin);
+    const cursorX = plotX + Math.max(0, Math.min(1, cursorProgress)) * plotW;
 
-    // 4. Synchronized Global Scrubber Cursor
-    const cursorX = plotX + ((surveillance.currentDate - tMin) / Math.max(0.1, tMax - tMin)) * plotW;
-    if (cursorX >= plotX && cursorX <= plotX + plotW) {
-      ctx.save();
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([3, 3]);
-      ctx.beginPath();
-      ctx.moveTo(cursorX, padding.top);
-      ctx.lineTo(cursorX, height - padding.bottom);
-      ctx.stroke();
+    ctx.save();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(cursorX, padding.top);
+    ctx.lineTo(cursorX, height - padding.bottom);
+    ctx.stroke();
 
-      ctx.fillStyle = '#f43f5e';
-      ctx.beginPath();
-      ctx.arc(cursorX, padding.top - 3, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(cursorX, padding.top - 3, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
   }
 
   $effect(() => {
@@ -164,12 +178,8 @@
     const padding = { top: 25, bottom: 25 };
     const plotH = container.clientHeight - padding.top - padding.bottom;
 
-    const vData = surveillance.velocityMatrix;
-    let displayCodons = vData.codons;
-    if (surveillance.sweepFilterMode === 'confirmed') {
-      const confSet = new Set(vData.confirmed_sweeps.map(s => s.codon));
-      displayCodons = displayCodons.filter(c => confSet.has(c));
-    }
+    const displayCodons = getDisplayCodons(surveillance.velocityMatrix, surveillance.sweepFilterMode);
+    if (!displayCodons.length) return;
 
     const codonIdx = Math.floor(((y - padding.top) / plotH) * displayCodons.length);
     if (codonIdx >= 0 && codonIdx < displayCodons.length) {

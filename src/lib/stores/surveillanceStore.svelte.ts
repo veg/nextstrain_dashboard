@@ -115,6 +115,9 @@ export class SurveillanceStore {
   async loadPathogen(pathogenId: string) {
     this.isLoading = true;
     this.currentPathogen = pathogenId;
+    this.selectedClockCommunity = null;
+    this.focalCodon = null;
+    this.hoveredCodon = null;
 
     try {
       const [streamlinesRes, velocityRes, epistasisRes, triageRes, deltaRes] = await Promise.allSettled([
@@ -131,6 +134,8 @@ export class SurveillanceStore {
           this.timeRange = this.streamlines.time_range;
           this.currentDate = this.timeRange[1]; // Default to most recent surveillance date
         }
+      } else {
+        this.streamlines = null;
       }
 
       if (velocityRes.status === 'fulfilled' && velocityRes.value.ok) {
@@ -140,19 +145,29 @@ export class SurveillanceStore {
           this.focalCodon = this.velocityMatrix.confirmed_sweeps[0].codon;
         } else if (this.velocityMatrix?.surveillance_codons?.length) {
           this.focalCodon = this.velocityMatrix.surveillance_codons[0];
+        } else if (this.velocityMatrix?.codons?.length) {
+          this.focalCodon = this.velocityMatrix.codons[0];
         }
+      } else {
+        this.velocityMatrix = null;
       }
 
       if (epistasisRes.status === 'fulfilled' && epistasisRes.value.ok) {
         this.epistasisGraph = await epistasisRes.value.json();
+      } else {
+        this.epistasisGraph = null;
       }
 
       if (triageRes.status === 'fulfilled' && triageRes.value.ok) {
         this.autoClockTriage = await triageRes.value.json();
+      } else {
+        this.autoClockTriage = null;
       }
 
       if (deltaRes.status === 'fulfilled' && deltaRes.value.ok) {
         this.deltaReport = await deltaRes.value.json();
+      } else {
+        this.deltaReport = null;
       }
     } catch (err) {
       console.error('Error loading surveillance payloads:', err);

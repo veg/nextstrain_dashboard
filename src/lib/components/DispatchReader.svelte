@@ -124,14 +124,24 @@ ChronAeon AutoClock deconvolution identified 3 independent evolutionary rate com
   $effect(() => {
     // When current pathogen changes, auto-load corresponding dispatch
     const pid = surveillance.currentPathogen;
-    const targetSlug = pid === 'avian-flu-h5n1' ? '2026-09-13-avian-flu-h5n1' : '2026-09-14-sars-cov-2';
-    if (targetSlug !== activeSlug) {
-      loadDispatch(targetSlug);
-    }
-  });
+    const match = DISPATCH_ARCHIVE.find((d) => d.pathogen === pid);
+    if (match) {
+      if (match.slug !== activeSlug) {
+        loadDispatch(match.slug);
+      }
+    } else {
+      activeSlug = pid;
+      rawDispatchText = `# Pathogen Intelligence Briefing: ${pid.replace(/-/g, ' ').toUpperCase()}
+**Surveillance Target:** \`${pid}\` | **Alert Level:** Ingestion Pending
 
-  onMount(() => {
-    loadDispatch('2026-09-14-sars-cov-2');
+---
+
+### Ingestion Notice
+Next-generation phylogenetic deconvolution and episodic sweep velocity inference for **${pid}** are currently queued for pipeline ingestion.
+
+Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to view live multi-scale surveillance streams.`;
+      renderedHtml = formatDispatch(rawDispatchText);
+    }
   });
 </script>
 

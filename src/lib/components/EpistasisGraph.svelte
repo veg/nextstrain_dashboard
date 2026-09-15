@@ -332,6 +332,17 @@
       class="absolute inset-0 w-full h-full block {hasWebGL && viewMode === '3d' ? 'pointer-events-none opacity-0' : 'opacity-100 cursor-pointer'}"
     ></canvas>
 
+    {#if !surveillance.epistasisGraph || !surveillance.epistasisGraph.nodes.length}
+      <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none z-10">
+        <div class="p-4 rounded-xl bg-dark-900/80 border border-slate-800 text-slate-400 max-w-xs shadow-lg backdrop-blur">
+          <div class="text-xs font-semibold text-slate-300">Sparse Epistatic Network</div>
+          <div class="text-[11px] font-mono text-slate-500 mt-1">
+            No pairwise co-selection edges exceed threshold (CESI &ge; 1.5) across the sampled window.
+          </div>
+        </div>
+      </div>
+    {/if}
+
     <!-- Legend Overlay -->
     <div class="absolute bottom-2 left-3 pointer-events-none text-[10px] font-mono text-slate-400 bg-dark-950/80 px-2 py-1 rounded border border-slate-800/60 backdrop-blur z-10">
       Nodes = Codons &bull; Edges = Composite Epistatic Selection Index &bull; Sectors = Co-selected Units

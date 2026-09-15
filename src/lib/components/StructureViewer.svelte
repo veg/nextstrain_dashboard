@@ -310,7 +310,6 @@
 
   onMount(() => {
     const cleanup = initThree();
-    loadPdbCoordinates('7KRR');
 
     const observer = new ResizeObserver(() => {
       if (renderer && camera && container && viewMode === '3d') {

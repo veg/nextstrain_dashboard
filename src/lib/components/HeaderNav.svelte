@@ -2,13 +2,13 @@
   import { surveillance } from '$lib/stores/surveillanceStore.svelte';
 
   const PATHOGEN_OPTIONS = [
-    { id: 'sars-cov-2', name: 'SARS-CoV-2 (COVID-19)', tier: 1, gene: 'Spike' },
-    { id: 'avian-flu-h5n1', name: 'Avian Flu A/H5N1 (Clade 2.3.4.4b)', tier: 1, gene: 'HA' },
-    { id: 'influenza-h3n2', name: 'Influenza A/H3N2', tier: 1, gene: 'HA' },
-    { id: 'influenza-h1n1pdm', name: 'Influenza A/H1N1pdm', tier: 1, gene: 'HA' },
-    { id: 'mpox', name: 'Mpox Virus (Clades I & IIb)', tier: 1, gene: 'A35R' },
-    { id: 'dengue', name: 'Dengue Virus (DENV 1-4)', tier: 2, gene: 'Envelope' },
-    { id: 'ebola', name: 'Ebola Virus (Filovirus)', tier: 3, gene: 'GP' },
+    { id: 'sars-cov-2', name: 'SARS-CoV-2 (COVID-19)', tier: 1, gene: 'Spike', live: true },
+    { id: 'avian-flu-h5n1', name: 'Avian Flu A/H5N1 (Clade 2.3.4.4b)', tier: 1, gene: 'HA', live: true },
+    { id: 'influenza-h3n2', name: 'Influenza A/H3N2', tier: 1, gene: 'HA', live: false },
+    { id: 'influenza-h1n1pdm', name: 'Influenza A/H1N1pdm', tier: 1, gene: 'HA', live: false },
+    { id: 'mpox', name: 'Mpox Virus (Clades I & IIb)', tier: 1, gene: 'A35R', live: false },
+    { id: 'dengue', name: 'Dengue Virus (DENV 1-4)', tier: 2, gene: 'Envelope', live: false },
+    { id: 'ebola', name: 'Ebola Virus (Filovirus)', tier: 3, gene: 'GP', live: false },
   ];
 
   function onSelectPathogen(e: Event) {
@@ -34,15 +34,24 @@
     <!-- Pathogen Selector -->
     <div class="relative flex items-center">
       <select
-        value={surveillance.currentPathogen}
+        bind:value={surveillance.currentPathogen}
         onchange={onSelectPathogen}
         class="bg-dark-800 text-slate-200 text-xs font-medium pl-3 pr-8 py-1.5 rounded-lg border border-slate-700 hover:border-slate-600 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-colors cursor-pointer appearance-none"
       >
-        {#each PATHOGEN_OPTIONS as p}
-          <option value={p.id}>
-            {p.name} [{p.gene}] &bull; Tier {p.tier}
-          </option>
-        {/each}
+        <optgroup label="Active Surveillance Targets (Live)">
+          {#each PATHOGEN_OPTIONS.filter(p => p.live) as p}
+            <option value={p.id}>
+              {p.name} [{p.gene}] &bull; Tier {p.tier}
+            </option>
+          {/each}
+        </optgroup>
+        <optgroup label="Pipeline Ingestion Queue">
+          {#each PATHOGEN_OPTIONS.filter(p => !p.live) as p}
+            <option value={p.id}>
+              {p.name} [{p.gene}] &bull; (Queue)
+            </option>
+          {/each}
+        </optgroup>
       </select>
       <div class="pointer-events-none absolute right-2.5 top-2 text-slate-400 text-xs">
         ▾
@@ -58,10 +67,16 @@
         <span class="font-semibold">ALERT:</span>
         <span class="truncate max-w-xs">{surveillance.deltaReport.alert_level} &bull; Codons {surveillance.deltaReport.newly_confirmed_sweeps.slice(0, 3).map(s => s.codon).join(', ')}</span>
       </div>
+    {:else if surveillance.deltaReport?.alert_level}
+      <div class="flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-950/80 border border-amber-500/50 text-amber-300 text-xs font-mono">
+        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+        <span class="font-semibold">NOTICE:</span>
+        <span class="truncate max-w-xs">{surveillance.deltaReport.alert_level}</span>
+      </div>
     {:else}
       <div class="flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-slate-400 text-xs font-mono">
         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <span>NOMINAL DYNAMICS &bull; 3 AutoClock Communities</span>
+        <span>NOMINAL DYNAMICS &bull; {surveillance.streamlines?.communities?.length || 2} AutoClock Communities</span>
       </div>
     {/if}
   </div>

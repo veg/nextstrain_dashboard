@@ -37,6 +37,7 @@ def run_chronaeon_pipeline(
     metadata_path: str,
     output_dir: str,
     max_k: int = 4,
+    reuse_work: bool = False,
 ) -> Dict[str, Any]:
     """Execute ChronAeon AutoClock and triage deconvolution."""
     print("=" * 70)
@@ -48,28 +49,31 @@ def run_chronaeon_pipeline(
     autoclock_json = os.path.join(work_dir, "autoclock.json")
     classified_csv = os.path.join(work_dir, "classified.csv")
 
-    cmd = [
-        "chronaeon",
-        "autoclock",
-        "-a", alignment_path,
-        "-d", metadata_path,
-        "--date-col", "date",
-        "--strain-col", "strain",
-        "--manifold", "distance",
-        "-k", str(max_k),
-        "--output-dir", work_dir,
-        "-o", autoclock_json,
-        "-c", classified_csv,
-        "--quiet",
-    ]
+    if reuse_work and os.path.exists(autoclock_json):
+        print(f"Reusing existing ChronAeon deconvolution outputs in {work_dir}")
+    else:
+        cmd = [
+            "chronaeon",
+            "autoclock",
+            "-a", alignment_path,
+            "-d", metadata_path,
+            "--date-col", "date",
+            "--strain-col", "strain",
+            "--manifold", "distance",
+            "-k", str(max_k),
+            "--output-dir", work_dir,
+            "-o", autoclock_json,
+            "-c", classified_csv,
+            "--quiet",
+        ]
 
-    print(f"Executing: {' '.join(cmd)}")
-    proc = subprocess.run(cmd, capture_output=True, text=True)
-    if proc.returncode != 0:
-        print(f"[Warning] chronaeon stderr: {proc.stderr}")
+        print(f"Executing: {' '.join(cmd)}")
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode != 0:
+            print(f"[Warning] chronaeon stderr: {proc.stderr}")
 
-    if not os.path.exists(autoclock_json):
-        raise RuntimeError(f"ChronAeon failed to produce {autoclock_json}. Stderr: {proc.stderr}")
+        if not os.path.exists(autoclock_json):
+            raise RuntimeError(f"ChronAeon failed to produce {autoclock_json}. Stderr: {proc.stderr}")
 
     with open(autoclock_json, "r", encoding="utf-8") as f:
         ac_data = json.load(f)
@@ -149,19 +153,65 @@ def run_chronaeon_pipeline(
     classified_path = os.path.join(work_dir, "classified.csv")
     samples_by_community = {c["id"]: [] for c in community_metas}
     
+    # Pre-map triage sequence details for divergence and community fallback
+    triage_map = {}
+    if os.path.exists(triage_csv):
+        with open(triage_csv, "r", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                s_name = r.get("strain", "")
+                try:
+                    triage_map[s_name] = {
+                        "divergence": float(r.get("divergence", 0.0)),
+                        "cid": int(r.get("clock_community", 0)),
+                        "date": float(r.get("date", 2024.0)),
+                    }
+                except (ValueError, TypeError):
+                    continue
+
     if os.path.exists(classified_path):
         with open(classified_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 try:
-                    cid = int(row.get("clock_community", 0))
-                    d = float(row.get("date", 2024.0))
-                    div = float(row.get("divergence", 0.0))
+                    strain_id = row.get("strain") or row.get("id") or ""
+                    cid_raw = row.get("inferred_clock_community") if row.get("inferred_clock_community") is not None else row.get("clock_community")
+                    if cid_raw is not None and str(cid_raw).strip() != "":
+                        cid = int(cid_raw)
+                    elif strain_id in triage_map:
+                        cid = triage_map[strain_id]["cid"]
+                    else:
+                        cid = 0
+
+                    div_raw = row.get("divergence")
+                    if div_raw is not None and str(div_raw).strip() != "" and float(div_raw) > 0.0:
+                        div = float(div_raw)
+                    elif strain_id in triage_map:
+                        div = triage_map[strain_id]["divergence"]
+                    else:
+                        div = 0.0
+
+                    date_raw = row.get("date")
+                    if date_raw is not None and str(date_raw).strip() != "":
+                        d = float(date_raw)
+                    elif strain_id in triage_map:
+                        d = triage_map[strain_id]["date"]
+                    else:
+                        d = 2024.0
+
                     n_obs = int(row.get("n_obs", 1))
                     if cid in samples_by_community:
                         samples_by_community[cid].append({"date": d, "divergence": div, "n_obs": n_obs})
                 except (ValueError, TypeError):
                     continue
+    elif triage_map:
+        for s_name, t_info in triage_map.items():
+            cid = t_info["cid"]
+            if cid in samples_by_community:
+                samples_by_community[cid].append({
+                    "date": t_info["date"],
+                    "divergence": t_info["divergence"],
+                    "n_obs": 1,
+                })
 
     ribbons = []
     all_dates = []
@@ -178,17 +228,18 @@ def run_chronaeon_pipeline(
         all_dates.extend(dates)
         all_divs.extend(divs)
 
-        # Build 15-20 spline knots across timespan for continuous ribbon
-        t_start = max(min(dates), c["tmrca"])
+        # Build 16 spline knots across timespan for continuous ribbon
+        t_start = min(dates)
         t_end = max(dates)
         n_knots = 16
         knots = []
-        dt = (t_end - t_start) / max(n_knots - 1, 1)
+        dt = (t_end - t_start) / max(n_knots - 1, 1) if t_end > t_start else 0.01
+        adaptive_window = max(0.03, (t_end - t_start) / 6.0)
 
         for step in range(n_knots):
             t_k = t_start + step * dt
-            # Empirical divergence in window [t_k - 0.40, t_k + 0.40]
-            window_samples = [s for s in samples if abs(s["date"] - t_k) <= 0.40]
+            # Empirical divergence in adaptive window
+            window_samples = [s for s in samples if abs(s["date"] - t_k) <= adaptive_window]
             if window_samples:
                 y_base = sum(s["divergence"] for s in window_samples) / len(window_samples)
                 window_obs = sum(s["n_obs"] for s in window_samples)
@@ -202,7 +253,7 @@ def run_chronaeon_pipeline(
 
             knots.append({
                 "t": float(f"{t_k:.4f}"),
-                "y": float(f"{y_base:.4f}"),
+                "y": float(f"{y_base:.6f}"),
                 "w": float(f"{w_k:.4f}"),
                 "community": cid,
                 "n_obs": window_obs,
@@ -218,9 +269,14 @@ def run_chronaeon_pipeline(
         float(f"{min(all_dates):.2f}") if all_dates else 2020.0,
         float(f"{max(all_dates):.2f}") if all_dates else 2026.5,
     ]
+    min_d = min(all_divs) if all_divs else 0.0
+    max_d = max(all_divs) if all_divs else 0.05
+    if max_d <= min_d:
+        max_d = min_d + 0.01
+
     div_range = [
-        float(f"{min(all_divs):.4f}") if all_divs else 0.0,
-        float(f"{max(all_divs):.4f}") if all_divs else 0.05,
+        float(f"{min_d:.6f}"),
+        float(f"{max_d:.6f}"),
     ]
 
     # 4. Save Static Payloads
@@ -268,6 +324,7 @@ def main():
     parser.add_argument("-d", "--metadata", default="data/sars-cov-2/collapsed_metadata.tsv")
     parser.add_argument("-o", "--output-dir", default="data/sars-cov-2")
     parser.add_argument("-k", "--max-k", type=int, default=4)
+    parser.add_argument("--reuse-work", action="store_true", help="Reuse existing work directory files")
 
     args = parser.parse_args()
     run_chronaeon_pipeline(
@@ -276,6 +333,7 @@ def main():
         metadata_path=args.metadata,
         output_dir=args.output_dir,
         max_k=args.max_k,
+        reuse_work=args.reuse_work,
     )
 
 
