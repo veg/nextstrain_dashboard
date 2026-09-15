@@ -546,7 +546,7 @@
         All ({surveillance.epistasisGraph.nodes.length})
       </button>
 
-      {#each surveillance.epistasisGraph.sectors as sector}
+      {#each [...surveillance.epistasisGraph.sectors].sort((a, b) => b.members.length - a.members.length) as sector}
         {@const color = getSectorColor(sector.sector_id)}
         <button
           type="button"
