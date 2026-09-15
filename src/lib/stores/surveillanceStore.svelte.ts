@@ -27,6 +27,7 @@ export class SurveillanceStore {
   isPlaying = $state<boolean>(false);
   playbackSpeed = $state<number>(1.0);
   timeRange = $state<[number, number]>([2020.0, 2026.6]);
+  activeTab = $state<'briefing' | 'clocks' | 'selection' | 'structure'>('briefing');
 
   // Interactive Filters
   focalCodon = $state<number | null>(456);
@@ -192,10 +193,22 @@ export class SurveillanceStore {
     this.playbackSpeed = speed;
   }
 
-  jumpToKeyframe(date: number, codon?: number) {
+  setActiveTab(tab: 'briefing' | 'clocks' | 'selection' | 'structure') {
+    this.activeTab = tab;
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tab);
+      window.history.replaceState({}, '', url.toString());
+    }
+  }
+
+  jumpToKeyframe(date: number, codon?: number, targetTab?: 'briefing' | 'clocks' | 'selection' | 'structure') {
     this.setCurrentDate(date);
     if (codon !== undefined) {
       this.setFocalCodon(codon);
+    }
+    if (targetTab) {
+      this.setActiveTab(targetTab);
     }
   }
 

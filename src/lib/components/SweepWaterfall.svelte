@@ -5,7 +5,8 @@
 
   let canvas: HTMLCanvasElement;
   let container: HTMLDivElement;
-  let hoveredCodonInfo: any = $state(null);
+  let searchQuery: string = $state('');
+  let searchError: string = $state('');
 
   function getDisplayCodons(vData: any, mode: string): number[] {
     if (!vData || !vData.codons) return [];
@@ -33,6 +34,63 @@
       }
     }
     return list;
+  }
+
+  function getCodonDomain(codon: number): { name: string; color: string; start: number; end: number } | null {
+    const domains = surveillance.velocityMatrix?.domains;
+    if (!domains) return null;
+    // Search in reverse so nested specific domains (e.g. RBM within RBD) take precedence
+    for (let i = domains.length - 1; i >= 0; i--) {
+      if (codon >= domains[i].start && codon <= domains[i].end) {
+        return domains[i];
+      }
+    }
+    return null;
+  }
+
+  function getFocalSweepInfo() {
+    const codon = surveillance.focalCodon;
+    if (codon === null || !surveillance.velocityMatrix) return null;
+    const { confirmed_sweeps = [], rescued_sweeps = [] } = surveillance.velocityMatrix;
+    const conf = confirmed_sweeps.find((s: any) => s.codon === codon);
+    const resc = rescued_sweeps.find((s: any) => s.codon === codon);
+    const domain = getCodonDomain(codon);
+    const currentVel = surveillance.activeResidueVelocities.get(codon) || 0;
+
+    return {
+      codon,
+      domain,
+      currentVel,
+      confirmed: conf,
+      rescued: resc,
+    };
+  }
+
+  let focalInfo = $derived(getFocalSweepInfo());
+
+  function handleSearchKey(e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      const num = parseInt(searchQuery.trim());
+      if (isNaN(num)) {
+        searchError = 'Enter a valid codon number';
+        return;
+      }
+      const vData = surveillance.velocityMatrix;
+      if (!vData || !vData.codons) return;
+
+      if (vData.codons.includes(num)) {
+        searchError = '';
+        surveillance.setFocalCodon(num);
+        // If not in current filter list, switch to all sites so it's visible
+        const currentList = getDisplayCodons(vData, surveillance.sweepFilterMode);
+        if (!currentList.includes(num)) {
+          surveillance.sweepFilterMode = 'all';
+        }
+      } else {
+        searchError = `Codon ${num} has no variable sweep trajectory`;
+        setTimeout(() => (searchError = ''), 3000);
+      }
+    }
   }
 
   function renderWaterfall() {
@@ -65,10 +123,10 @@
     }
 
     const { codons, time_points, matrix, domains } = vData;
-    const padding = { top: 25, right: 30, bottom: 25, left: 60 };
-    const domainWidth = 12;
+    const padding = { top: 25, right: 35, bottom: 38, left: 65 };
+    const domainWidth = 14;
 
-    const plotX = padding.left + domainWidth + 6;
+    const plotX = padding.left + domainWidth + 8;
     const plotW = width - plotX - padding.right;
     const plotH = height - padding.top - padding.bottom;
 
@@ -77,7 +135,7 @@
 
     const displayCodons = getDisplayCodons(vData, surveillance.sweepFilterMode);
     const nCodons = displayCodons.length;
-    const cellH = Math.max(2, plotH / Math.max(1, nCodons));
+    const cellH = Math.max(3, plotH / Math.max(1, nCodons));
     const cellW = plotW / Math.max(1, time_points.length);
 
     // 1. Draw Domain Band on the Left (aligned to displayed codon rows)
@@ -114,7 +172,7 @@
 
       // Focal Codon Background Highlight
       if (isFocal) {
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.22)';
         ctx.fillRect(plotX, y - 1, plotW, cellH + 2);
       }
 
@@ -128,11 +186,11 @@
       }
 
       // Draw Codon Label on Left
-      if (cellH >= 10 || isFocal || cIdx % 5 === 0) {
+      if (cellH >= 12 || isFocal || cIdx % 5 === 0) {
         ctx.fillStyle = isFocal ? '#38bdf8' : '#94a3b8';
-        ctx.font = `${isFocal ? 'bold ' : ''}9px JetBrains Mono, monospace`;
+        ctx.font = `${isFocal ? 'bold ' : ''}10px JetBrains Mono, monospace`;
         ctx.textAlign = 'right';
-        ctx.fillText(String(codon), padding.left - 4, y + cellH * 0.8);
+        ctx.fillText(String(codon), padding.left - 6, y + cellH * 0.8);
       }
     }
 
@@ -151,7 +209,7 @@
 
     ctx.fillStyle = '#38bdf8';
     ctx.beginPath();
-    ctx.arc(cursorX, padding.top - 3, 3, 0, Math.PI * 2);
+    ctx.arc(cursorX, padding.top - 3, 3.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -188,13 +246,31 @@
   }
 </script>
 
-<div class="h-full w-full flex flex-col glass-panel rounded-xl overflow-hidden relative" bind:this={container}>
-  <!-- Header Bar -->
-  <div class="h-9 border-b border-slate-800/80 px-3 flex items-center justify-between bg-dark-900/60 select-none">
+<div class="h-full w-full flex flex-col glass-panel rounded-xl overflow-hidden relative">
+  <!-- Top Navigation & Controls Bar -->
+  <div class="h-10 border-b border-slate-800/80 px-3 flex items-center justify-between bg-dark-900/70 select-none shrink-0 z-10">
     <div class="flex items-center space-x-2">
       <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-      <span class="text-xs font-semibold tracking-wide text-slate-200">VIEWPORT B: SWEEP VELOCITY WATERFALL</span>
+      <span class="text-xs font-semibold tracking-wide text-slate-200">SELECTION SWEEP VELOCITY WATERFALL</span>
       <span class="text-[10px] font-mono text-slate-500">v_s(t) = max(0, da/dt)</span>
+    </div>
+
+    <!-- Center: Search Input -->
+    <div class="hidden sm:flex items-center space-x-2">
+      <div class="relative flex items-center">
+        <input
+          type="text"
+          placeholder="Codon # (e.g. 456)..."
+          bind:value={searchQuery}
+          onkeydown={handleSearchKey}
+          class="bg-dark-950 text-slate-200 text-xs font-mono px-2.5 py-1 rounded-lg border border-slate-700/80 focus:outline-none focus:border-sky-500 w-44 placeholder-slate-500"
+        />
+        {#if searchError}
+          <div class="absolute -bottom-5 left-0 text-[10px] text-rose-400 font-mono whitespace-nowrap bg-dark-950 px-1 rounded">
+            {searchError}
+          </div>
+        {/if}
+      </div>
     </div>
 
     <!-- Filter Toggles -->
@@ -209,19 +285,75 @@
         onclick={() => (surveillance.sweepFilterMode = 'rescued')}
         class="px-2 py-0.5 rounded {surveillance.sweepFilterMode === 'rescued' ? 'bg-amber-950 text-amber-300 font-bold border border-amber-600/50' : 'text-slate-400 hover:text-slate-200'}"
       >
-        Rescued Sweeps ({surveillance.velocityMatrix?.rescued_sweeps?.length || 0})
+        Rescued ({surveillance.velocityMatrix?.rescued_sweeps?.length || 0})
       </button>
       <button
         onclick={() => (surveillance.sweepFilterMode = 'all')}
         class="px-2 py-0.5 rounded {surveillance.sweepFilterMode === 'all' ? 'bg-slate-700 text-white font-bold' : 'text-slate-400 hover:text-slate-200'}"
       >
-        All Sites ({surveillance.velocityMatrix?.codons?.length || 0})
+        All ({surveillance.velocityMatrix?.codons?.length || 0})
       </button>
     </div>
   </div>
 
+  <!-- Focal Codon Inspector Strip -->
+  {#if focalInfo}
+    <div class="h-9 border-b border-sky-900/40 bg-sky-950/20 px-3 flex items-center justify-between text-xs select-none shrink-0">
+      <div class="flex items-center space-x-3 text-[11px] font-mono truncate">
+        <div class="flex items-center space-x-1.5 text-sky-300 font-bold">
+          <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+          <span>Codon #{focalInfo.codon}</span>
+        </div>
+
+        {#if focalInfo.domain}
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-dark-900/80 border border-slate-700 text-slate-300" style="border-left: 3px solid {focalInfo.domain.color};">
+            {focalInfo.domain.name}
+          </span>
+        {/if}
+
+        <div class="text-slate-400 hidden md:inline">
+          Velocity at {surveillance.currentDate.toFixed(2)}:
+          <span class="text-rose-400 font-semibold">{focalInfo.currentVel.toFixed(4)} subs/site/yr</span>
+        </div>
+
+        {#if focalInfo.confirmed}
+          <span class="px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-800 text-[9px] hidden lg:inline">
+            Peak: {focalInfo.confirmed.peak_velocity} (t={focalInfo.confirmed.peak_date.toFixed(2)}) &bull; p={focalInfo.confirmed.p_perm}
+          </span>
+        {:else if focalInfo.rescued}
+          <span class="px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-800 text-[9px] hidden lg:inline">
+            Rescued from post-fixation dilution
+          </span>
+        {/if}
+      </div>
+
+      <div class="flex items-center space-x-2 text-[10px] font-mono">
+        <button
+          type="button"
+          onclick={() => surveillance.setActiveTab('structure')}
+          class="px-2.5 py-1 rounded bg-indigo-900/60 hover:bg-indigo-800/80 text-indigo-200 border border-indigo-500/40 transition-colors flex items-center space-x-1"
+        >
+          <span>Inspect in 3D Structure</span>
+          <span>↗</span>
+        </button>
+        <button
+          type="button"
+          onclick={() => surveillance.setFocalCodon(null)}
+          class="px-1.5 py-0.5 text-slate-400 hover:text-slate-200"
+          title="Clear focal selection"
+        >
+          &times;
+        </button>
+      </div>
+    </div>
+  {:else}
+    <div class="h-7 border-b border-slate-800/60 bg-dark-900/40 px-3 flex items-center text-[11px] font-mono text-slate-500 select-none shrink-0">
+      <span>Click any codon row or enter a codon number above to lock a focal sweep trajectory.</span>
+    </div>
+  {/if}
+
   <!-- Canvas Surface -->
-  <div class="flex-1 relative overflow-hidden">
+  <div class="flex-1 relative overflow-hidden" bind:this={container}>
     <canvas
       bind:this={canvas}
       onclick={handleCanvasClick}
@@ -229,7 +361,7 @@
     ></canvas>
 
     <!-- Legend Overlay -->
-    <div class="absolute top-2 right-3 pointer-events-none flex items-center space-x-2 text-[10px] font-mono bg-dark-950/80 px-2.5 py-1 rounded border border-slate-800/60 backdrop-blur">
+    <div class="absolute top-2 right-3 pointer-events-none flex items-center space-x-2 text-[10px] font-mono bg-dark-950/80 px-2.5 py-1 rounded border border-slate-800/60 backdrop-blur z-10">
       <span class="text-slate-400">Velocity:</span>
       <span class="w-2.5 h-2 rounded bg-sky-400"></span>
       <span class="text-slate-400">Low</span>
@@ -237,6 +369,10 @@
       <span class="text-slate-400">Med</span>
       <span class="w-2.5 h-2 rounded bg-rose-500"></span>
       <span class="text-slate-400">High (&gt;0.035)</span>
+    </div>
+
+    <div class="absolute bottom-2 left-3 pointer-events-none text-[10px] font-mono text-slate-500 bg-dark-950/80 px-2 py-1 rounded border border-slate-800/60 backdrop-blur z-10">
+      Left Strip = Domain Architecture &bull; Rows = Codon Positions &bull; Heatmap = Nadaraya-Watson Instantaneous Velocity v_s(t)
     </div>
   </div>
 </div>

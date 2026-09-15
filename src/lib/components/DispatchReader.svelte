@@ -147,11 +147,11 @@ Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to
 
 <div class="h-full w-full flex flex-col glass-panel rounded-xl overflow-hidden relative">
   <!-- Header Bar -->
-  <div class="h-9 border-b border-slate-800/80 px-3 flex items-center justify-between bg-dark-900/60 select-none shrink-0 z-10">
+  <div class="h-9 border-b border-slate-800/80 px-3 flex items-center justify-between bg-dark-900/70 select-none shrink-0 z-10">
     <div class="flex items-center space-x-2">
       <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-      <span class="text-xs font-semibold tracking-wide text-slate-200">VIEWPORT D: AGENT INTELLIGENCE DISPATCH</span>
-      <span class="text-[10px] font-mono text-slate-500">Antigravity AI</span>
+      <span class="text-xs font-semibold tracking-wide text-slate-200">PATHOGEN INTELLIGENCE DISPATCH</span>
+      <span class="text-[10px] font-mono text-slate-500">Antigravity AI Agent</span>
     </div>
 
     <!-- Archive & PR Links -->
@@ -173,6 +173,34 @@ Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to
       </a>
     </div>
   </div>
+
+  {#if surveillance.focalCodon !== null}
+    <!-- Contextual Cross-Workspace Action Strip -->
+    <div class="h-8 border-b border-sky-900/40 bg-sky-950/30 px-3 flex items-center justify-between text-xs select-none shrink-0">
+      <div class="flex items-center space-x-2 text-sky-300 font-mono text-[11px]">
+        <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
+        <span>Active Keyframe: <strong>Codon {surveillance.focalCodon}</strong> &bull; t = {surveillance.currentDate.toFixed(2)}</span>
+      </div>
+      <div class="flex items-center space-x-2 text-[10px] font-mono">
+        <button
+          type="button"
+          onclick={() => surveillance.setActiveTab('selection')}
+          class="px-2 py-0.5 rounded bg-sky-900/50 hover:bg-sky-800/60 text-sky-200 border border-sky-600/40 transition-colors flex items-center space-x-1"
+        >
+          <span>Selection Waterfall</span>
+          <span>↗</span>
+        </button>
+        <button
+          type="button"
+          onclick={() => surveillance.setActiveTab('structure')}
+          class="px-2 py-0.5 rounded bg-indigo-900/50 hover:bg-indigo-800/60 text-indigo-200 border border-indigo-600/40 transition-colors flex items-center space-x-1"
+        >
+          <span>3D Structure</span>
+          <span>↗</span>
+        </button>
+      </div>
+    </div>
+  {/if}
 
   <!-- Content Surface -->
   <!-- svelte-ignore a11y_click_events_have_key_events -->
