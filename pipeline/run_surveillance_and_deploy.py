@@ -100,18 +100,21 @@ def run_full_pipeline(
     os.makedirs("static/dispatches", exist_ok=True)
     subprocess.run("cp dispatches/*.md static/dispatches/ 2>/dev/null || true", shell=True)
 
-    # 6. Build Static Pages and Push to GitHub Pages
+    # 6. Optional Multi-Channel Broadcast
+    if broadcast:
+        print("\nPublishing Slack and Email alerts...")
+        send_slack_notification(f"static/data/{pathogen_id}/delta_report.json")
+        send_email_digest(
+            f"static/data/{pathogen_id}/delta_report.json",
+            output_html=f"static/data/{pathogen_id}/email_preview.html",
+        )
+
+    # 7. Build Static Pages and Push to GitHub Pages
     if deploy:
         print("\n[Step 6/6] Compiling Static SvelteKit Dashboard and Pushing to GitHub Pages...")
         subprocess.run(["bash", "pipeline/deploy_gh_pages.sh"], check=True)
     else:
         print("\n[Step 6/6] Static build skipped (pass --deploy to build and publish).")
-
-    # 7. Optional Multi-Channel Broadcast
-    if broadcast:
-        print("\nPublishing Slack and Email alerts...")
-        send_slack_notification(f"static/data/{pathogen_id}/delta_report.json")
-        send_email_digest(f"static/data/{pathogen_id}/delta_report.json")
 
     print("\n" + "=" * 80)
     print(f"SURVEILLANCE WORKFLOW COMPLETED SUCCESSFULLY FOR {pathogen_id}!")

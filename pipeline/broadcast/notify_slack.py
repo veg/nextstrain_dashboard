@@ -12,8 +12,8 @@ import sys
 import urllib.request
 from typing import Any, Dict, Optional
 
-DASHBOARD_BASE_URL = os.environ.get("DASHBOARD_BASE_URL", "https://surveillance.veg.org")
-REPO_BASE_URL = os.environ.get("REPO_BASE_URL", "https://github.com/veg/pathogen-intelligence")
+DASHBOARD_BASE_URL = os.environ.get("DASHBOARD_BASE_URL", "https://veg.github.io/nextstrain_dashboard")
+REPO_BASE_URL = os.environ.get("REPO_BASE_URL", "https://github.com/veg/nextstrain_dashboard")
 
 
 def build_slack_blocks(
