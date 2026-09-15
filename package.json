@@ -8,6 +8,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy": "npm run build && bash pipeline/deploy_gh_pages.sh",
+    "surveillance": "python3 pipeline/run_surveillance_and_deploy.py",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
