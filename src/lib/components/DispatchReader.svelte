@@ -7,7 +7,7 @@
   let rawDispatchText: string = $state('');
   let renderedHtml: string = $state('');
   let isArchiveOpen = $state(false);
-  let activeSlug = $state('2026-09-14-sars-cov-2');
+  let activeSlug = $state('');
 
   const DISPATCH_ARCHIVE = [
     { slug: '2026-09-14-sars-cov-2', title: 'SARS-CoV-2 Spike RBM Sweep Acceleration', date: '2026-09-14', pathogen: 'sars-cov-2', tier: 1 },
