@@ -8,9 +8,11 @@ builds the static dashboard (build/), and pushes directly to GitHub Pages (gh-pa
 
 import argparse
 import datetime
+import json
 import os
 import subprocess
 import sys
+from typing import Optional
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
