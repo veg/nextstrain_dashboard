@@ -1,0 +1,1 @@
+{"pathogen_id":"mpox","protein":"Envelope Protein A35R","gene":"A35R","length":1273,"time_points":[],"codons":[],"matrix":[],"confirmed_sweeps":[],"rescued_sweeps":[],"domains":[{"name":"Transmembrane Region","start":1,"end":35,"color":"#64748b"},{"name":"Extracellular EEV Domain","start":36,"end":182,"color":"#3b82f6"}],"surveillance_codons":[37,54,78,120]}
