@@ -54,7 +54,7 @@ Input Data Context:
     "id": 0,
     "rate": 0.001,
     "r2": 0.0206,
-    "tmrca": NaN,
+    "tmrca": 2020.0,
     "taxa_count": 130,
     "color": "#3b82f6",
     "timespan": [
@@ -66,7 +66,7 @@ Input Data Context:
     "id": 1,
     "rate": 0.001,
     "r2": 0.7606,
-    "tmrca": NaN,
+    "tmrca": 2020.0,
     "taxa_count": 38,
     "color": "#10b981",
     "timespan": [
@@ -78,7 +78,7 @@ Input Data Context:
     "id": 2,
     "rate": 0.0033,
     "r2": 0.8037,
-    "tmrca": NaN,
+    "tmrca": 2020.0,
     "taxa_count": 132,
     "color": "#f59e0b",
     "timespan": [

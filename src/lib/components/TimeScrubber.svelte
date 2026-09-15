@@ -138,8 +138,21 @@
     </div>
   </div>
 
-  <!-- Right: Active Selection Pill -->
+  <!-- Right: Active Selection Pill & Attribution -->
   <div class="hidden sm:flex items-center space-x-3 text-xs font-mono">
+    <a
+      href="https://nextstrain.org"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-[11px] text-slate-500 hover:text-sky-400 transition-colors flex items-center space-x-1"
+      title="Data powered by Nextstrain (Hadfield et al., 2018)"
+    >
+      <span>Data powered by <strong class="text-slate-400 hover:text-sky-300">Nextstrain</strong></span>
+      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+      </svg>
+    </a>
+    <span class="text-slate-700">|</span>
     {#if surveillance.focalCodon !== null}
       <div class="px-2.5 py-1 rounded bg-sky-950/80 border border-sky-600/40 text-sky-300 flex items-center space-x-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>

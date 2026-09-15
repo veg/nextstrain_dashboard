@@ -234,8 +234,10 @@
     ></canvas>
 
     <!-- Legend Overlay -->
-    <div class="absolute bottom-2 left-3 pointer-events-none text-[10px] font-mono text-slate-500 bg-dark-950/80 px-2 py-1 rounded border border-slate-800/60 backdrop-blur">
-      Width = Lineage Expansion Volume (N_obs) &bull; Divergence = AutoClock &mu; &bull; Time = Calendar Years
+    <div class="absolute bottom-2 left-3 pointer-events-none text-[10px] font-mono text-slate-500 bg-dark-950/80 px-2 py-1 rounded border border-slate-800/60 backdrop-blur flex items-center space-x-2">
+      <span>Width = Lineage Expansion Volume (N_obs) &bull; Divergence = AutoClock &mu; &bull; Time = Calendar Years</span>
+      <span class="text-slate-700">|</span>
+      <span class="text-slate-400">Upstream Tree: Nextstrain Open Data S3</span>
     </div>
   </div>
 </div>

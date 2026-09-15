@@ -38,6 +38,25 @@
     }
   ];
 
+  const NEXTSTRAIN_URLS: Record<string, string> = {
+    'sars-cov-2': 'https://nextstrain.org/ncov/open/global/all-time',
+    'avian-flu-h5n1': 'https://nextstrain.org/avian-flu/h5n1-cattle-outbreak',
+    'influenza-h3n2': 'https://nextstrain.org/flu/seasonal/h3n2/ha/2y',
+    'influenza-h1n1pdm': 'https://nextstrain.org/flu/seasonal/h1n1pdm/ha/2y',
+    'influenza-b': 'https://nextstrain.org/flu/seasonal/vic/ha/2y',
+    'rsv': 'https://nextstrain.org/rsv/a',
+    'mpox': 'https://nextstrain.org/mpox/all-clades',
+    'dengue': 'https://nextstrain.org/dengue',
+    'zika': 'https://nextstrain.org/zika',
+    'ebola': 'https://nextstrain.org/ebola',
+    'west-nile': 'https://nextstrain.org/WNV/NA',
+    'measles': 'https://nextstrain.org/measles',
+  };
+
+  let currentNextstrainUrl = $derived(
+    NEXTSTRAIN_URLS[surveillance.currentPathogen] || 'https://nextstrain.org'
+  );
+
   function onSelectPathogen(e: Event) {
     const select = e.target as HTMLSelectElement;
     surveillance.loadPathogen(select.value);
@@ -126,6 +145,19 @@
         <span>Nominal Dynamics</span>
       </div>
     {/if}
+
+    <a
+      href={currentNextstrainUrl}
+      target="_blank"
+      rel="noreferrer"
+      class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-sky-950/80 hover:bg-sky-900 border border-sky-600/40 text-sky-300 transition-colors shadow-sm"
+      title="Explore live ancestral phylogeny build on Nextstrain.org"
+    >
+      <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+        <path d="M12 2a1 1 0 011 1v3.1a4.5 4.5 0 013.9 3.9H20a1 1 0 110 2h-3.1a4.5 4.5 0 01-3.9 3.9V19a1 1 0 11-2 0v-3.1A4.5 4.5 0 017.1 12H4a1 1 0 110-2h3.1A4.5 4.5 0 0111 6.1V3a1 1 0 011-1zm0 6a2.5 2.5 0 100 5 2.5 2.5 0 000-5z"/>
+      </svg>
+      <span class="font-mono text-xs font-semibold">Nextstrain ↗</span>
+    </a>
 
     <a
       href="https://github.com/veg/nextstrain_dashboard"

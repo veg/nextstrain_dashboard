@@ -7,6 +7,25 @@
   let container: HTMLDivElement;
   let searchQuery: string = $state('');
   let searchError: string = $state('');
+  let hoveredCell = $state<{
+    codon: number;
+    t: number;
+    dateStr: string;
+    vel: number;
+    x: number;
+    y: number;
+    domain: { name: string; color: string; start: number; end: number } | null;
+    confirmed: any | null;
+    rescued: any | null;
+  } | null>(null);
+
+  function formatDateDisplay(decimalYear: number): string {
+    const year = Math.floor(decimalYear);
+    const dayFraction = decimalYear - year;
+    const monthIdx = Math.min(11, Math.floor(dayFraction * 12));
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return `${months[monthIdx]} ${year}`;
+  }
 
   function getDisplayCodons(vData: any, mode: string): number[] {
     if (!vData || !vData.codons) return [];
@@ -194,7 +213,25 @@
       }
     }
 
-    // 3. Draw Temporal Cursor Line
+    // 3. Draw Hovered Cell Frame & Crosshairs
+    if (hoveredCell) {
+      const cIdx = displayCodons.indexOf(hoveredCell.codon);
+      if (cIdx !== -1) {
+        const hY = padding.top + cIdx * cellH;
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.14)';
+        ctx.fillRect(plotX, hY, plotW, cellH);
+
+        const tIdx = time_points.indexOf(hoveredCell.t);
+        if (tIdx !== -1) {
+          const hX = plotX + tIdx * cellW;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(hX, hY, Math.ceil(cellW), Math.ceil(cellH));
+        }
+      }
+    }
+
+    // 4. Draw Temporal Cursor Line
     const cursorProgress = (surveillance.currentDate - tMin) / Math.max(0.01, tMax - tMin);
     const cursorX = plotX + Math.max(0, Math.min(1, cursorProgress)) * plotW;
 
@@ -219,6 +256,7 @@
     const _v = surveillance.velocityMatrix;
     const _f = surveillance.focalCodon;
     const _m = surveillance.sweepFilterMode;
+    const _h = hoveredCell;
     renderWaterfall();
   });
 
@@ -228,6 +266,75 @@
     renderWaterfall();
     return () => observer.disconnect();
   });
+
+  function handleMouseMove(e: MouseEvent) {
+    if (!canvas || !container || !surveillance.velocityMatrix) {
+      hoveredCell = null;
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const vData = surveillance.velocityMatrix;
+    const { codons, time_points, matrix } = vData;
+    if (!codons?.length || !time_points?.length) {
+      hoveredCell = null;
+      return;
+    }
+
+    const padding = { top: 25, right: 35, bottom: 38, left: 65 };
+    const domainWidth = 14;
+    const plotX = padding.left + domainWidth + 8;
+    const plotW = width - plotX - padding.right;
+    const plotH = height - padding.top - padding.bottom;
+
+    if (clientX < plotX || clientX > plotX + plotW || clientY < padding.top || clientY > padding.top + plotH) {
+      hoveredCell = null;
+      return;
+    }
+
+    const displayCodons = getDisplayCodons(vData, surveillance.sweepFilterMode);
+    const nCodons = displayCodons.length;
+    if (!nCodons) {
+      hoveredCell = null;
+      return;
+    }
+
+    const cIdx = Math.floor(((clientY - padding.top) / plotH) * nCodons);
+    const tIdx = Math.floor(((clientX - plotX) / plotW) * time_points.length);
+
+    if (cIdx >= 0 && cIdx < nCodons && tIdx >= 0 && tIdx < time_points.length) {
+      const codon = displayCodons[cIdx];
+      const t = time_points[tIdx];
+      const origIdx = codons.indexOf(codon);
+      const row = origIdx !== -1 ? matrix[origIdx] : null;
+      const vel = row ? (row[tIdx] || 0) : 0;
+      const domain = getCodonDomain(codon);
+      const conf = vData.confirmed_sweeps?.find((s: any) => s.codon === codon);
+      const resc = vData.rescued_sweeps?.find((s: any) => s.codon === codon);
+
+      hoveredCell = {
+        codon,
+        t,
+        dateStr: formatDateDisplay(t),
+        vel,
+        x: clientX,
+        y: clientY,
+        domain,
+        confirmed: conf,
+        rescued: resc,
+      };
+    } else {
+      hoveredCell = null;
+    }
+  }
+
+  function handleMouseLeave() {
+    hoveredCell = null;
+  }
 
   function handleCanvasClick(e: MouseEvent) {
     if (!canvas || !container || !surveillance.velocityMatrix) return;
@@ -357,8 +464,83 @@
     <canvas
       bind:this={canvas}
       onclick={handleCanvasClick}
+      onmousemove={handleMouseMove}
+      onmouseleave={handleMouseLeave}
       class="w-full h-full block cursor-pointer"
     ></canvas>
+
+    <!-- Interactive Floating Tooltip -->
+    {#if hoveredCell}
+      {@const posX = Math.min(hoveredCell.x + 16, (container?.clientWidth || 800) - 270)}
+      {@const posY = Math.max(12, Math.min(hoveredCell.y - 30, (container?.clientHeight || 500) - 170))}
+      <div
+        class="absolute pointer-events-none z-30 flex flex-col p-3 rounded-xl bg-dark-950/95 border border-slate-700/90 shadow-2xl backdrop-blur text-xs font-mono max-w-[260px] animate-in fade-in duration-100"
+        style="left: {posX}px; top: {posY}px;"
+      >
+        <!-- Header -->
+        <div class="flex items-center justify-between pb-1.5 border-b border-slate-800">
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+            <span class="font-bold text-sky-300 text-sm">Codon #{hoveredCell.codon}</span>
+          </div>
+          {#if hoveredCell.domain}
+            <span
+              class="text-[10px] px-1.5 py-0.5 rounded border font-semibold truncate max-w-[120px]"
+              style="background-color: {hoveredCell.domain.color}22; color: {hoveredCell.domain.color}; border-color: {hoveredCell.domain.color}55;"
+            >
+              {hoveredCell.domain.name}
+            </span>
+          {/if}
+        </div>
+
+        <!-- Metrics -->
+        <div class="py-2 space-y-1.5 text-[11px]">
+          <div class="flex items-center justify-between text-slate-400">
+            <span>Date:</span>
+            <span class="text-slate-200 font-semibold">{hoveredCell.dateStr} <span class="text-slate-500">({hoveredCell.t.toFixed(2)})</span></span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Velocity v_s(t):</span>
+            <div class="flex items-center space-x-1.5">
+              <span
+                class="w-2 h-2 rounded-full"
+                style="background-color: {getVelocityColor(hoveredCell.vel, 0.035)};"
+              ></span>
+              <span class="font-bold" style="color: {hoveredCell.vel > 0.005 ? '#f43f5e' : '#94a3b8'};">
+                {hoveredCell.vel.toFixed(4)}
+              </span>
+              <span class="text-[9px] text-slate-500">subs/yr</span>
+            </div>
+          </div>
+
+          {#if hoveredCell.confirmed}
+            <div class="mt-1 pt-1.5 border-t border-slate-800/80">
+              <div class="text-[10px] text-rose-400 font-semibold flex items-center space-x-1">
+                <span>⚡ Confirmed Adaptive Sweep</span>
+              </div>
+              <div class="text-[9px] text-slate-400 mt-0.5">
+                Peak: {hoveredCell.confirmed.peak_velocity.toFixed(3)} at {hoveredCell.confirmed.peak_date.toFixed(2)} (p={hoveredCell.confirmed.p_perm})
+              </div>
+            </div>
+          {:else if hoveredCell.rescued}
+            <div class="mt-1 pt-1.5 border-t border-slate-800/80">
+              <div class="text-[10px] text-amber-400 font-semibold flex items-center space-x-1">
+                <span>🛡️ Rescued Selection Sweep</span>
+              </div>
+              <div class="text-[9px] text-slate-400 mt-0.5">
+                Transient acceleration restored post-fixation
+              </div>
+            </div>
+          {/if}
+        </div>
+
+        <!-- Footer Hint -->
+        <div class="pt-1.5 border-t border-slate-800 text-[9px] text-sky-400/80 flex items-center space-x-1">
+          <span>Click row to lock focal trajectory ↗</span>
+        </div>
+      </div>
+    {/if}
 
     <!-- Legend Overlay -->
     <div class="absolute top-2 right-3 pointer-events-none flex items-center space-x-2 text-[10px] font-mono bg-dark-950/80 px-2.5 py-1 rounded border border-slate-800/60 backdrop-blur z-10">

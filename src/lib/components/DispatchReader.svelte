@@ -118,8 +118,32 @@ ChronAeon AutoClock deconvolution identified 3 independent evolutionary rate com
 ### 5. Forward Surveillance Recommendations
 1. **Targeted Wastewater Monitoring:** Prioritize digital PCR for 455S + 456L dual substitution.
 2. **Neutralization Titer Assays:** Screen sera against KP.3.1.1 and epistatic partner variants.
-3. **Sequencing Quality Control:** Screen regional laboratories submitting high-divergence outliers flagged by LOOCV studentized residuals.`;
+3. **Sequencing Quality Control:** Screen regional laboratories submitting high-divergence outliers flagged by LOOCV studentized residuals.
+
+---
+
+### 6. Data Provenance & Acknowledgement
+Phylogenetic trees, open consensus alignments, and continuous genomic surveillance feeds are curated and published by the **[Nextstrain Project](https://nextstrain.org)** (*Hadfield et al., Real-time tracking of pathogen evolution under an open data model, Bioinformatics 2018*) and public health laboratories worldwide depositing to NCBI GenBank and open data repositories. Live interactive ancestral reconstructions can be explored directly on [Nextstrain SARS-CoV-2](https://nextstrain.org/ncov/open/global/all-time).`;
   }
+
+  const NEXTSTRAIN_URLS: Record<string, string> = {
+    'sars-cov-2': 'https://nextstrain.org/ncov/open/global/all-time',
+    'avian-flu-h5n1': 'https://nextstrain.org/avian-flu/h5n1-cattle-outbreak',
+    'influenza-h3n2': 'https://nextstrain.org/flu/seasonal/h3n2/ha/2y',
+    'influenza-h1n1pdm': 'https://nextstrain.org/flu/seasonal/h1n1pdm/ha/2y',
+    'influenza-b': 'https://nextstrain.org/flu/seasonal/vic/ha/2y',
+    'rsv': 'https://nextstrain.org/rsv/a',
+    'mpox': 'https://nextstrain.org/mpox/all-clades',
+    'dengue': 'https://nextstrain.org/dengue',
+    'zika': 'https://nextstrain.org/zika',
+    'ebola': 'https://nextstrain.org/ebola',
+    'west-nile': 'https://nextstrain.org/WNV/NA',
+    'measles': 'https://nextstrain.org/measles',
+  };
+
+  let nextstrainBuildUrl = $derived(
+    NEXTSTRAIN_URLS[surveillance.currentPathogen] || 'https://nextstrain.org'
+  );
 
   $effect(() => {
     // When current pathogen changes, auto-load corresponding dispatch
@@ -139,7 +163,12 @@ ChronAeon AutoClock deconvolution identified 3 independent evolutionary rate com
 ### Ingestion Notice
 Next-generation phylogenetic deconvolution and episodic sweep velocity inference for **${pid}** are currently queued for pipeline ingestion.
 
-Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to view live multi-scale surveillance streams.`;
+Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to view live multi-scale surveillance streams.
+
+---
+
+### Data Provenance & Acknowledgement
+Genomic sequences and phylogenetic trees are ingested from the **[Nextstrain Project](https://nextstrain.org)** (*Hadfield et al., Bioinformatics 2018*). Live builds are accessible on [Nextstrain.org](${nextstrainBuildUrl}).`;
       renderedHtml = formatDispatch(rawDispatchText);
     }
   });
@@ -154,8 +183,18 @@ Please select **SARS-CoV-2** or **Avian Flu A/H5N1** from the header dropdown to
       <span class="text-[10px] font-mono text-slate-500">Antigravity AI Agent</span>
     </div>
 
-    <!-- Archive & PR Links -->
+    <!-- Links: Nextstrain + Archive + PR -->
     <div class="flex items-center space-x-2 text-[10px] font-mono">
+      <a
+        href={nextstrainBuildUrl}
+        target="_blank"
+        rel="noreferrer"
+        class="px-2 py-0.5 rounded bg-sky-950/80 hover:bg-sky-900 text-sky-300 border border-sky-700/50 transition-colors flex items-center space-x-1"
+        title="Open live Nextstrain tree for this pathogen"
+      >
+        <span>Nextstrain Build</span>
+        <span>↗</span>
+      </a>
       <button
         type="button"
         onclick={() => (isArchiveOpen = !isArchiveOpen)}
