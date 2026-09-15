@@ -79,19 +79,23 @@
 
       // Draw Upper and Lower Ribbon Contours
       ctx.beginPath();
-      // Forward path (upper edge: y + w/2)
+      // Forward path (upper edge: yCenter - halfWidthPx)
       for (let i = 0; i < knots.length; i++) {
         const k = knots[i];
         const x = scaleX(k.t);
-        const yTop = scaleY(k.y + k.w * 0.0005);
+        const yCenter = scaleY(k.y);
+        const halfW = Math.max(3, Math.min(24, (k.w || 1.0) * 3.5));
+        const yTop = yCenter - halfW;
         if (i === 0) ctx.moveTo(x, yTop);
         else ctx.lineTo(x, yTop);
       }
-      // Backward path (lower edge: y - w/2)
+      // Backward path (lower edge: yCenter + halfWidthPx)
       for (let i = knots.length - 1; i >= 0; i--) {
         const k = knots[i];
         const x = scaleX(k.t);
-        const yBottom = scaleY(k.y - k.w * 0.0005);
+        const yCenter = scaleY(k.y);
+        const halfW = Math.max(3, Math.min(24, (k.w || 1.0) * 3.5));
+        const yBottom = yCenter + halfW;
         ctx.lineTo(x, yBottom);
       }
       ctx.closePath();

@@ -13,138 +13,20 @@ Key principles:
 Execute the daily epidemiological intelligence review for AVIAN-FLU-H5N1 (avian-flu-h5n1) on 2026-09-14.
 
 Input Data Context:
-- Current Surveillance Target: avian-flu-h5n1 (Spike Glycoprotein)
+- Current Surveillance Target: avian-flu-h5n1 (Hemagglutinin (HA))
 - Daily Delta Summary:
 {
   "date": "2026-09-14",
   "pathogen_id": "avian-flu-h5n1",
-  "alert_level": "Tier-2 Moderate Velocity",
-  "newly_confirmed_sweeps": [
-    {
-      "codon": 3,
-      "peak_velocity": 0.0005,
-      "peak_date": 2024.0219,
-      "auc": 0.0001,
-      "p_perm": 0.0476,
-      "r2_wave": 1.0
-    },
-    {
-      "codon": 143,
-      "peak_velocity": 0.0041,
-      "peak_date": 2024.2678,
-      "auc": 0.0009,
-      "p_perm": 0.0476,
-      "r2_wave": 1.0
-    },
-    {
-      "codon": 325,
-      "peak_velocity": 0.0003,
-      "peak_date": 2024.0219,
-      "auc": 0.0,
-      "p_perm": 0.0476,
-      "r2_wave": 1.0
-    }
-  ],
+  "alert_level": "Nominal",
+  "newly_confirmed_sweeps": [],
   "accelerations": [],
-  "new_clock_communities": [
-    {
-      "id": 0,
-      "rate": 0.001,
-      "r2": 0.3252,
-      "tmrca": NaN,
-      "taxa_count": 56,
-      "color": "#3b82f6",
-      "timespan": [
-        2024.0792,
-        2024.2678
-      ]
-    },
-    {
-      "id": 1,
-      "rate": 0.001,
-      "r2": 0.3978,
-      "tmrca": NaN,
-      "taxa_count": 38,
-      "color": "#10b981",
-      "timespan": [
-        2024.0219,
-        2024.2486
-      ]
-    }
-  ],
-  "new_quarantined_outliers": [
-    {
-      "strain": "A/canadagoose/NewMexico/24-005749-001/2024",
-      "date": 2024.123,
-      "community": 0,
-      "divergence": 0.0053,
-      "residual": 0.0023,
-      "studentized_residual": 2.6555,
-      "is_sus": false,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=2.66)"
-      ]
-    },
-    {
-      "strain": "A/mallard/Minnesota/24-006961-018/2024",
-      "date": 2024.1585,
-      "community": 0,
-      "divergence": 0.0059,
-      "residual": 0.0036,
-      "studentized_residual": 3.9074,
-      "is_sus": true,
-      "classification": "sequencing_artifact",
-      "reasons": [
-        "Extreme molecular clock departure (|Z|=3.91 >= 3.5)"
-      ]
-    },
-    {
-      "strain": "A/mountain_lion/Montana/24-005908-001/2024",
-      "date": 2024.0792,
-      "community": 0,
-      "divergence": 0.0018,
-      "residual": -0.002,
-      "studentized_residual": -2.5159,
-      "is_sus": false,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=2.52)"
-      ]
-    },
-    {
-      "strain": "A/snow_goose/California/24-004881-004/2024",
-      "date": 2024.0464,
-      "community": 1,
-      "divergence": 0.0113,
-      "residual": 0.0052,
-      "studentized_residual": 3.4098,
-      "is_sus": true,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=3.41)"
-      ]
-    },
-    {
-      "strain": "A/red-tailedhawk/SouthCarolina/24-005993-001/2024",
-      "date": 2024.0219,
-      "community": 1,
-      "divergence": 0.003,
-      "residual": -0.0038,
-      "studentized_residual": -2.5645,
-      "is_sus": false,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=2.56)"
-      ]
-    }
-  ],
+  "new_clock_communities": [],
+  "new_quarantined_outliers": [],
   "active_codons_summary": [
-    "Spike Glycoprotein 3",
-    "Spike Glycoprotein 143",
-    "Spike Glycoprotein 325"
+    "Hemagglutinin (HA) 143"
   ],
-  "executive_summary": "Active positive sweep velocity acceleration detected at Spike Glycoprotein codons [3, 143, 325]. Instantaneous selection intensity reached 0.0041 subs/site/yr with 5 quarantined LOOCV outlier(s)."
+  "executive_summary": "Nominal evolutionary trajectory maintained across 2 AutoClock communities. No acute positive sweep velocity inflections detected in current surveillance horizon."
 }
 
 - AutoClock Rate Communities:
@@ -178,27 +60,11 @@ Input Data Context:
 - Top Emergent Sweeps (Instantaneous Positive Velocity vs Diluted Static):
 [
   {
-    "codon": 3,
-    "peak_velocity": 0.0005,
-    "peak_date": 2024.0219,
-    "auc": 0.0001,
-    "p_perm": 0.0476,
-    "r2_wave": 1.0
-  },
-  {
     "codon": 143,
     "peak_velocity": 0.0041,
     "peak_date": 2024.2678,
     "auc": 0.0009,
-    "p_perm": 0.0476,
-    "r2_wave": 1.0
-  },
-  {
-    "codon": 325,
-    "peak_velocity": 0.0003,
-    "peak_date": 2024.0219,
-    "auc": 0.0,
-    "p_perm": 0.0476,
+    "p_perm": 0.0323,
     "r2_wave": 1.0
   }
 ]
@@ -206,8 +72,14 @@ Input Data Context:
 - Epistatic Co-Selection Pairs (Composite Epistatic Selection Index CESI >= 1.5):
 []
 
-- Historical Context (None):
-No previous dispatches recorded. This is the baseline surveillance briefing.
+- Historical Context (2026-09-13):
+# Pathogen Intelligence Briefing: Avian Influenza A/H5N1 Clade 2.3.4.4b
+**Date:** 2026-09-13 | **Surveillance Target:** Avian Influenza A/H5N1 (`avian-flu-h5n1`) | **Alert Level:** Tier-2 Moderate Velocity
+
+---
+
+### 1. Executive Alert
+Genomic surveillance of H5N1 clade 2.3.4.4b reveals emerging selective acceleration across Hemagglutinin (HA) receptor-binding residues, focalized at [t=2024.1, codon=137] and [t=2024.2, codon=190]. While avian $\alpha2\text{-}3$ sialic acid specificity remains conserved across the wild bird reservoir, bovine and dairy spillover isolates (genotype B3.13) display ...
 
 Generate an Intelligence Dispatch in markdown adhering to the 5-part structure:
 1. Executive Alert (1 concise paragraph highlighting new VOC/VOI risks or transmission jumps).

@@ -9,6 +9,7 @@ and projects continuous alluvial streamline coordinates (t, y, w, k).
 import argparse
 import csv
 import json
+import math
 import os
 import subprocess
 import sys
@@ -91,7 +92,12 @@ def run_chronaeon_pipeline(
             cal_rate = 1.0e-3
         
         cal_tmrca = cinfo.get("calibrated_tmrca")
-        if cal_tmrca is None:
+        try:
+            if cal_tmrca is None or math.isnan(float(cal_tmrca)):
+                cal_tmrca = 2020.0
+            else:
+                cal_tmrca = float(cal_tmrca)
+        except (ValueError, TypeError):
             cal_tmrca = 2020.0
 
         community_metas.append({
@@ -181,10 +187,16 @@ def run_chronaeon_pipeline(
 
         for step in range(n_knots):
             t_k = t_start + step * dt
-            # Manifold divergence along AutoClock slope
-            y_base = c["rate"] * max(0.0, t_k - c["tmrca"]) * 1000.0 + (cid * 0.8)
-            # Active volume in window [t_k - 0.25, t_k + 0.25]
-            window_obs = sum(s["n_obs"] for s in samples if abs(s["date"] - t_k) <= 0.35)
+            # Empirical divergence in window [t_k - 0.40, t_k + 0.40]
+            window_samples = [s for s in samples if abs(s["date"] - t_k) <= 0.40]
+            if window_samples:
+                y_base = sum(s["divergence"] for s in window_samples) / len(window_samples)
+                window_obs = sum(s["n_obs"] for s in window_samples)
+            else:
+                closest = min(samples, key=lambda s: abs(s["date"] - t_k))
+                y_base = closest["divergence"]
+                window_obs = 1
+
             # Non-linear expansion width
             w_k = max(0.5, (window_obs ** 0.5) * 0.4)
 

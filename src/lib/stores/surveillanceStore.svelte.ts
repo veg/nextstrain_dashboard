@@ -9,6 +9,17 @@ import type {
 } from '$lib/types/surveillance';
 import { base } from '$app/paths';
 
+export function resolveAssetUrl(path: string): string {
+  const clean = path.startsWith('/') ? path.slice(1) : path;
+  if (base) {
+    return `${base}/${clean}`;
+  }
+  if (typeof window !== 'undefined' && window.location.pathname.includes('/nextstrain_dashboard')) {
+    return `/nextstrain_dashboard/${clean}`;
+  }
+  return `/${clean}`;
+}
+
 export class SurveillanceStore {
   // Navigation & Time
   currentPathogen = $state<string>('sars-cov-2');
@@ -92,7 +103,7 @@ export class SurveillanceStore {
 
   async loadRegistry() {
     try {
-      const res = await fetch(`${base}/data/registry.json`);
+      const res = await fetch(resolveAssetUrl('data/registry.json'));
       if (res.ok) {
         this.registry = await res.json();
       }
@@ -107,11 +118,11 @@ export class SurveillanceStore {
 
     try {
       const [streamlinesRes, velocityRes, epistasisRes, triageRes, deltaRes] = await Promise.allSettled([
-        fetch(`${base}/data/${pathogenId}/manifold_streamlines.json`),
-        fetch(`${base}/data/${pathogenId}/sweep_velocity.json`),
-        fetch(`${base}/data/${pathogenId}/epistasis_cesi.json`),
-        fetch(`${base}/data/${pathogenId}/autoclock_triage.json`),
-        fetch(`${base}/data/${pathogenId}/delta_report.json`),
+        fetch(resolveAssetUrl(`data/${pathogenId}/manifold_streamlines.json`)),
+        fetch(resolveAssetUrl(`data/${pathogenId}/sweep_velocity.json`)),
+        fetch(resolveAssetUrl(`data/${pathogenId}/epistasis_cesi.json`)),
+        fetch(resolveAssetUrl(`data/${pathogenId}/autoclock_triage.json`)),
+        fetch(resolveAssetUrl(`data/${pathogenId}/delta_report.json`)),
       ]);
 
       if (streamlinesRes.status === 'fulfilled' && streamlinesRes.value.ok) {
