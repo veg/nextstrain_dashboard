@@ -8,10 +8,8 @@ BUILD_DIR="build"
 BRANCH="gh-pages"
 REMOTE="${1:-origin}"
 
-if [ ! -d "$BUILD_DIR" ]; then
-  echo "[Build] Running npm run build..."
-  npm run build
-fi
+echo "[Build] Compiling static SvelteKit cockpit..."
+BASE_PATH="${BASE_PATH:-/nextstrain_dashboard}" npm run build
 
 touch "$BUILD_DIR/.nojekyll"
 
@@ -43,7 +41,7 @@ if [ -n "$REMOTE_URL" ]; then
   if git push "$REMOTE_URL" "$BRANCH":"$BRANCH" --force; then
     echo ""
     echo "[✓] Successfully deployed static dashboard to GitHub Pages!"
-    echo "    Host URL: https://veg.github.io/pathogen-intelligence/"
+    echo "    Host URL: https://veg.github.io/nextstrain_dashboard/"
     echo "    (or configured custom domain https://surveillance.veg.org/)"
   else
     echo ""

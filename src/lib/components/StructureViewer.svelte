@@ -1,6 +1,7 @@
 <script lang="ts">
   import { surveillance } from '$lib/stores/surveillanceStore.svelte';
   import { getVelocityColor, getVelocityRgb } from '$lib/utils/colorScales';
+  import { base } from '$app/paths';
   import { onMount } from 'svelte';
   import * as THREE from 'three';
 
@@ -15,7 +16,7 @@
   // Parse CA (Carbon Alpha) backbone atoms from PDB for 3D ribbon / sphere representation
   async function loadPdbCoordinates(pdbId: string) {
     try {
-      const res = await fetch(`/structures/${pdbId}.pdb`);
+      const res = await fetch(`${base}/structures/${pdbId}.pdb`);
       if (!res.ok) return;
       const text = await res.text();
       const lines = text.split('\n');

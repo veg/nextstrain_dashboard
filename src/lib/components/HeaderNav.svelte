@@ -76,7 +76,7 @@
     <div class="h-4 w-px bg-slate-800"></div>
 
     <a
-      href="https://github.com/veg/pathogen-intelligence"
+      href="https://github.com/veg/nextstrain_dashboard"
       target="_blank"
       rel="noreferrer"
       class="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"

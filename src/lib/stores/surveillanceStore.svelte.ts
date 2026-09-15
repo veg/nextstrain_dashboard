@@ -7,6 +7,7 @@ import type {
   StreamlinePayload,
   VelocityPayload,
 } from '$lib/types/surveillance';
+import { base } from '$app/paths';
 
 export class SurveillanceStore {
   // Navigation & Time
@@ -91,7 +92,7 @@ export class SurveillanceStore {
 
   async loadRegistry() {
     try {
-      const res = await fetch('/data/registry.json');
+      const res = await fetch(`${base}/data/registry.json`);
       if (res.ok) {
         this.registry = await res.json();
       }
@@ -106,11 +107,11 @@ export class SurveillanceStore {
 
     try {
       const [streamlinesRes, velocityRes, epistasisRes, triageRes, deltaRes] = await Promise.allSettled([
-        fetch(`/data/${pathogenId}/manifold_streamlines.json`),
-        fetch(`/data/${pathogenId}/sweep_velocity.json`),
-        fetch(`/data/${pathogenId}/epistasis_cesi.json`),
-        fetch(`/data/${pathogenId}/autoclock_triage.json`),
-        fetch(`/data/${pathogenId}/delta_report.json`),
+        fetch(`${base}/data/${pathogenId}/manifold_streamlines.json`),
+        fetch(`${base}/data/${pathogenId}/sweep_velocity.json`),
+        fetch(`${base}/data/${pathogenId}/epistasis_cesi.json`),
+        fetch(`${base}/data/${pathogenId}/autoclock_triage.json`),
+        fetch(`${base}/data/${pathogenId}/delta_report.json`),
       ]);
 
       if (streamlinesRes.status === 'fulfilled' && streamlinesRes.value.ok) {

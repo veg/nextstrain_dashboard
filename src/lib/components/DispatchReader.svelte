@@ -1,5 +1,6 @@
 <script lang="ts">
   import { surveillance } from '$lib/stores/surveillanceStore.svelte';
+  import { base } from '$app/paths';
   import { onMount } from 'svelte';
 
   let rawDispatchText: string = $state('');
@@ -13,7 +14,7 @@
   async function loadDispatch(slug: string) {
     try {
       // Fetch markdown from dispatches or mock fallback
-      const res = await fetch(`/dispatches/${slug}.md`);
+      const res = await fetch(`${base}/dispatches/${slug}.md`);
       if (res.ok) {
         rawDispatchText = await res.text();
       } else {
@@ -96,7 +97,7 @@ ChronAeon AutoClock deconvolution identified 3 independent evolutionary rate com
         {isArchiveOpen ? 'Close Archive' : 'Archive (2)'}
       </button>
       <a
-        href="https://github.com/veg/pathogen-intelligence/pulls"
+        href="https://github.com/veg/nextstrain_dashboard/pulls"
         target="_blank"
         rel="noreferrer"
         class="text-sky-400 hover:underline"
