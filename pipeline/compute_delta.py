@@ -130,7 +130,16 @@ def compute_pathogen_delta(pathogen_id: str) -> Dict[str, Any]:
 
     # Formulate Executive Summary
     if alert_level == "Tier-1 High Velocity Sweep" or alert_level == "Tier-2 Moderate Velocity":
-        focus_sites = ", ".join([str(s["codon"]) for s in recent_sweeps[:3]]) or ", ".join([str(a["codon"]) for a in accelerations[:3]])
+        top_contemporary = sorted(
+            [c for c, v in current_velocities.items() if v >= 0.010],
+            key=lambda c: current_velocities[c],
+            reverse=True,
+        )
+        focus_sites = (
+            ", ".join([str(s["codon"]) for s in recent_sweeps[:3]])
+            or ", ".join([str(a["codon"]) for a in accelerations[:3]])
+            or ", ".join(top_contemporary[:3])
+        )
         exec_summary = (
             f"Active positive sweep velocity acceleration detected at {v_data.get('protein', 'protein')} codons [{focus_sites}]. "
             f"Current instantaneous selection intensity reached {current_max_v:.4f} subs/site/yr with {len(new_outliers)} quarantined LOOCV outlier(s)."

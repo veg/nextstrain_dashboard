@@ -66,6 +66,12 @@ def run_full_pipeline(
     elif pathogen_id == "avian-flu-h5n1" and os.path.exists("data/avian-flu-h5n1/ha_inframe_alignment.fasta"):
         alignment_path = "data/avian-flu-h5n1/ha_inframe_alignment.fasta"
         metadata_path = "data/avian-flu-h5n1/ha_inframe_metadata.tsv"
+    elif os.path.exists(f"data/{pathogen_id}/ha_inframe_alignment.fasta"):
+        alignment_path = f"data/{pathogen_id}/ha_inframe_alignment.fasta"
+        metadata_path = f"data/{pathogen_id}/ha_inframe_metadata.tsv"
+    elif os.path.exists(f"data/{pathogen_id}/inframe_alignment.fasta"):
+        alignment_path = f"data/{pathogen_id}/inframe_alignment.fasta"
+        metadata_path = f"data/{pathogen_id}/inframe_metadata.tsv"
 
     # 2. Run ChronAeon Manifold & LOOCV Triage
     print("\n[Step 2/6] Executing ChronAeon AutoClock and Manifold Deconvolution...")
@@ -136,7 +142,21 @@ def main():
     args = parser.parse_args()
 
     if args.all:
-        targets = ["sars-cov-2", "avian-flu-h5n1"]
+        reg_path = "config/pathogen_registry.json"
+        targets = []
+        if os.path.exists(reg_path):
+            with open(reg_path, "r", encoding="utf-8") as rf:
+                reg_data = json.load(rf)
+                # Load all active Tier-1 pathogens configured in registry
+                targets = [
+                    p["id"]
+                    for p in reg_data.get("pathogens", [])
+                    if p.get("active", True) and p.get("tier", 1) == 1
+                ]
+        if not targets:
+            targets = ["sars-cov-2", "avian-flu-h5n1", "influenza-h3n2", "influenza-h1n1pdm"]
+
+        print(f"\n[Multi-Target Surveillance] Running across {len(targets)} active Tier-1 pathogens: {targets}\n")
         for idx, target in enumerate(targets):
             is_last = idx == len(targets) - 1
             run_full_pipeline(

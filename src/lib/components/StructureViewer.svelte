@@ -60,7 +60,10 @@
   ];
 
   function getActiveDomains() {
-    return surveillance.currentPathogen === 'avian-flu-h5n1' ? DOMAINS_H5N1 : DOMAINS_SARS;
+    if (surveillance.velocityMatrix?.domains && surveillance.velocityMatrix.domains.length > 0) {
+      return surveillance.velocityMatrix.domains;
+    }
+    return surveillance.currentPathogen.includes('flu') ? DOMAINS_H5N1 : DOMAINS_SARS;
   }
 
   function getCodonDomain(codon: number): { name: string; color: string } | null {
@@ -514,7 +517,7 @@
 
   $effect(() => {
     const pid = surveillance.currentPathogen;
-    const pdb = pid === 'avian-flu-h5n1' ? '4HMG' : '7KRR';
+    const pdb = pid.includes('flu') ? '4HMG' : (pid === 'sars-cov-2' ? '7KRR' : '7KRR');
     loadPdbCoordinates(pdb);
   });
 

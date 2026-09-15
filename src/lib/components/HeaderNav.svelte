@@ -4,9 +4,11 @@
   const PATHOGEN_OPTIONS = [
     { id: 'sars-cov-2', name: 'SARS-CoV-2 (COVID-19)', tier: 1, gene: 'Spike', live: true },
     { id: 'avian-flu-h5n1', name: 'Avian Flu A/H5N1 (Clade 2.3.4.4b)', tier: 1, gene: 'HA', live: true },
-    { id: 'influenza-h3n2', name: 'Influenza A/H3N2', tier: 1, gene: 'HA', live: false },
-    { id: 'influenza-h1n1pdm', name: 'Influenza A/H1N1pdm', tier: 1, gene: 'HA', live: false },
-    { id: 'mpox', name: 'Mpox Virus (Clades I & IIb)', tier: 1, gene: 'A35R', live: false },
+    { id: 'influenza-h3n2', name: 'Influenza A/H3N2', tier: 1, gene: 'HA', live: true },
+    { id: 'influenza-h1n1pdm', name: 'Influenza A/H1N1pdm', tier: 1, gene: 'HA', live: true },
+    { id: 'influenza-b', name: 'Influenza B (Victoria)', tier: 1, gene: 'HA', live: true },
+    { id: 'rsv', name: 'Respiratory Syncytial Virus (RSV A)', tier: 1, gene: 'F', live: true },
+    { id: 'mpox', name: 'Mpox Virus (Clades I & IIb)', tier: 1, gene: 'A35R', live: true },
     { id: 'dengue', name: 'Dengue Virus (DENV 1-4)', tier: 2, gene: 'Envelope', live: false },
     { id: 'ebola', name: 'Ebola Virus (Filovirus)', tier: 3, gene: 'GP', live: false },
   ];

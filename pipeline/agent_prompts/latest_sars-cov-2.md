@@ -18,34 +18,13 @@ Input Data Context:
 {
   "date": "2026-09-14",
   "pathogen_id": "sars-cov-2",
-  "alert_level": "Tier-1 High Velocity Sweep",
+  "alert_level": "Nominal",
   "newly_confirmed_sweeps": [],
   "accelerations": [],
   "new_clock_communities": [],
   "new_quarantined_outliers": [],
-  "active_codons_summary": [
-    "Spike Glycoprotein 3",
-    "Spike Glycoprotein 22",
-    "Spike Glycoprotein 52",
-    "Spike Glycoprotein 59",
-    "Spike Glycoprotein 83",
-    "Spike Glycoprotein 176",
-    "Spike Glycoprotein 183",
-    "Spike Glycoprotein 184",
-    "Spike Glycoprotein 186",
-    "Spike Glycoprotein 213",
-    "Spike Glycoprotein 339",
-    "Spike Glycoprotein 346",
-    "Spike Glycoprotein 455",
-    "Spike Glycoprotein 456",
-    "Spike Glycoprotein 478",
-    "Spike Glycoprotein 529",
-    "Spike Glycoprotein 950",
-    "Spike Glycoprotein 1086",
-    "Spike Glycoprotein 1104",
-    "Spike Glycoprotein 1150"
-  ],
-  "executive_summary": "Nominal evolutionary trajectory maintained across 3 AutoClock communities. No acute positive sweep velocity inflections detected in current surveillance horizon."
+  "active_codons_summary": [],
+  "executive_summary": "Nominal evolutionary trajectory maintained across 3 AutoClock communities (t=2026.65). Historical adaptive sweeps (e.g. L455F/JN.1 at t=2023.78) have transitioned to post-sweep fixation/quiescence. Current instantaneous selection velocities across all sites remain baseline (max v_s = 0.0046 subs/site/yr)."
 }
 
 - AutoClock Rate Communities:
@@ -283,12 +262,12 @@ Input Data Context:
 
 - Historical Context (2026-09-14):
 # Pathogen Intelligence Briefing: SARS-CoV-2 Spike Glycoprotein
-**Date:** 2026-09-14 | **Surveillance Target:** SARS-CoV-2 (`sars-cov-2`) | **Alert Level:** Tier-1 High Velocity Sweep
+**Date:** 2026-09-14 | **Surveillance Target:** SARS-CoV-2 (`sars-cov-2`) | **Alert Level:** Nominal (Post-Sweep Equilibrium / Baseline Drift)
 
 ---
 
-### 1. Executive Alert
-A concentrated burst of instantaneous selection velocity $v_s(t)$ has been detected across receptor-binding domain (RBD) codons, led by [t=2024.8, codon=456] and [t=2024.8, codon=455] within sublineages KP.3 and JN.1 radiations. Positive sweep velocity reached $0.0374\text{ subs/site/year}$, displaying a 3.2-month lead time over empirical population prevalence curves. Immediate genomi...
+### 1. Executive Summary & Surveillance Status
+Continuous positive selection velocity $v_s(t)$ computed across the 6.5-year longitudinal alignment of SARS-CoV-2 Spike reveals that **no acute positive sweep velocity surges are currently active** in the contemporary surveillance horizon ($t = 2026.65$). The historical peak velocity events documented in the dataset—most notably at [t=202...
 
 Generate an Intelligence Dispatch in markdown adhering to the 5-part structure:
 1. Executive Alert (1 concise paragraph highlighting new VOC/VOI risks or transmission jumps).

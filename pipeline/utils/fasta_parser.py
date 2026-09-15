@@ -96,11 +96,30 @@ def collapse_haplotypes(
                 if strain:
                     meta_by_strain[strain] = row
 
+    # Determine dominant in-frame target length if sequences vary
+    length_counter = {}
+    sample_count = 0
+    for header, seq in parse_fasta_stream(fasta_path):
+        sample_count += 1
+        seq_len = len(seq)
+        weight = 5 if (seq.startswith("ATG") and seq_len % 3 == 0) else 1
+        length_counter[seq_len] = length_counter.get(seq_len, 0) + weight
+        if sample_count >= 1000:
+            break
+
+    target_length = None
+    if length_counter:
+        target_length = max(length_counter.keys(), key=lambda l: length_counter[l])
+
     # Hash sequences
     haplotypes = {}  # seq_hash -> dict with representative, count, dates, members
     raw_count = 0
 
     for header, seq in parse_fasta_stream(fasta_path):
+        # Filter for uniform length alignment
+        if target_length and len(seq) != target_length:
+            continue
+
         raw_count += 1
         strain = header.split()[0]
 

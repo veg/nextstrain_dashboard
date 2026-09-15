@@ -41,9 +41,9 @@
       "name": "Seasonal Influenza A/H3N2",
       "tier": 1,
       "cadence": "daily",
-      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/h3n2/",
       "s3_manifest_candidates": [
-        "files/workflows/seasonal-flu/"
+        "files/workflows/seasonal-flu/h3n2/"
       ],
       "default_gene": "ha",
       "available_genes": ["ha", "na"],
@@ -56,14 +56,14 @@
       "name": "Seasonal Influenza A/H1N1pdm",
       "tier": 1,
       "cadence": "daily",
-      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/h1n1pdm/",
       "s3_manifest_candidates": [
-        "files/workflows/seasonal-flu/"
+        "files/workflows/seasonal-flu/h1n1pdm/"
       ],
       "default_gene": "ha",
       "available_genes": ["ha", "na"],
       "focal_protein": "Hemagglutinin (HA)",
-      "pdb_id": "1RU7",
+      "pdb_id": "4HMG",
       "active": true
     },
     {
@@ -71,9 +71,9 @@
       "name": "Seasonal Influenza B (Victoria)",
       "tier": 1,
       "cadence": "daily",
-      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/vic/",
       "s3_manifest_candidates": [
-        "files/workflows/seasonal-flu/"
+        "files/workflows/seasonal-flu/vic/"
       ],
       "default_gene": "ha",
       "available_genes": ["ha", "na"],
@@ -86,9 +86,9 @@
       "name": "Respiratory Syncytial Virus (RSV A & B)",
       "tier": 1,
       "cadence": "daily",
-      "s3_workflow_prefix": "files/workflows/rsv/",
+      "s3_workflow_prefix": "files/workflows/rsv/a/",
       "s3_manifest_candidates": [
-        "files/workflows/rsv/"
+        "files/workflows/rsv/a/"
       ],
       "default_gene": "F",
       "available_genes": ["F", "G"],

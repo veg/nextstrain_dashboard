@@ -60,6 +60,45 @@ def resolve_pathogen_sources(pathogen_id: str, gene: Optional[str] = None) -> Di
             "gene": gene_name,
         }
 
+    # For Seasonal Flu H3N2
+    if pathogen_id == "influenza-h3n2":
+        gene_name = target_gene.lower() if target_gene else "ha"
+        return {
+            "fasta_key": f"files/workflows/seasonal-flu/h3n2/{gene_name}/sequences.fasta.zst",
+            "meta_key": "files/workflows/seasonal-flu/h3n2/metadata.tsv.zst",
+            "name": "Influenza A/H3N2",
+            "gene": gene_name,
+        }
+
+    # For Seasonal Flu H1N1pdm
+    if pathogen_id == "influenza-h1n1pdm":
+        gene_name = target_gene.lower() if target_gene else "ha"
+        return {
+            "fasta_key": f"files/workflows/seasonal-flu/h1n1pdm/{gene_name}/sequences.fasta.zst",
+            "meta_key": "files/workflows/seasonal-flu/h1n1pdm/metadata.tsv.zst",
+            "name": "Influenza A/H1N1pdm",
+            "gene": gene_name,
+        }
+
+    # For Seasonal Flu B (Victoria)
+    if pathogen_id == "influenza-b":
+        gene_name = target_gene.lower() if target_gene else "ha"
+        return {
+            "fasta_key": f"files/workflows/seasonal-flu/vic/{gene_name}/sequences.fasta.zst",
+            "meta_key": "files/workflows/seasonal-flu/vic/metadata.tsv.zst",
+            "name": "Influenza B (Victoria)",
+            "gene": gene_name,
+        }
+
+    # For RSV A
+    if pathogen_id == "rsv":
+        return {
+            "fasta_key": "files/workflows/rsv/a/sequences.fasta.xz",
+            "meta_key": "files/workflows/rsv/a/metadata.tsv.gz",
+            "name": "RSV A & B",
+            "gene": target_gene or "F",
+        }
+
     # Generic discovery
     keys = list_s3_keys(prefix, max_keys=50)
     fasta_key = None

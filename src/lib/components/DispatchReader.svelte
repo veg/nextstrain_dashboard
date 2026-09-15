@@ -10,7 +10,10 @@
   let activeSlug = $state('');
 
   const DISPATCH_ARCHIVE = [
-    { slug: '2026-09-14-sars-cov-2', title: 'SARS-CoV-2 Spike RBM Sweep Acceleration', date: '2026-09-14', pathogen: 'sars-cov-2', tier: 1 },
+    { slug: '2026-09-14-influenza-h1n1pdm', title: 'Influenza A/H1N1pdm HA Loop Sweep Burst', date: '2026-09-14', pathogen: 'influenza-h1n1pdm', tier: 1 },
+    { slug: '2026-09-14-influenza-h3n2', title: 'Influenza A/H3N2 Clade 2a Baseline Drift', date: '2026-09-14', pathogen: 'influenza-h3n2', tier: 1 },
+    { slug: '2026-09-14-influenza-b', title: 'Influenza B Victoria V1A.3a Subclade Renewal', date: '2026-09-14', pathogen: 'influenza-b', tier: 1 },
+    { slug: '2026-09-14-sars-cov-2', title: 'SARS-CoV-2 Spike Post-Sweep Equilibrium', date: '2026-09-14', pathogen: 'sars-cov-2', tier: 1 },
     { slug: '2026-09-13-avian-flu-h5n1', title: 'Avian Flu H5N1 Clade 2.3.4.4b Spillover', date: '2026-09-13', pathogen: 'avian-flu-h5n1', tier: 1 },
   ];
 

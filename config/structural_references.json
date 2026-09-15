@@ -39,6 +39,89 @@
         "Clade 2.3.4.4b": [137, 190, 225, 228],
         "Cattle Outbreak (B3.13)": [137, 343]
       }
+    },
+    "influenza-h3n2": {
+      "protein": "Hemagglutinin",
+      "gene": "ha",
+      "pdb_id": "4HMG",
+      "length": 566,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 16, "color": "#64748b"},
+        {"name": "HA1 Subunit", "start": 17, "end": 340, "color": "#3b82f6"},
+        {"name": "RBS (Receptor-Binding Site)", "start": 130, "end": 230, "color": "#f59e0b"},
+        {"name": "Cleavage Site", "start": 341, "end": 346, "color": "#ef4444"},
+        {"name": "HA2 Subunit (Stem/Fusion)", "start": 347, "end": 566, "color": "#10b981"}
+      ],
+      "surveillance_codons": [145, 156, 158, 159, 160, 186, 189, 193, 225, 226],
+      "key_variants": {
+        "3c2.A1b": [159, 160],
+        "3c3.A": [145, 225]
+      }
+    },
+    "influenza-h1n1pdm": {
+      "protein": "Hemagglutinin",
+      "gene": "ha",
+      "pdb_id": "4HMG",
+      "length": 566,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 17, "color": "#64748b"},
+        {"name": "HA1 Subunit", "start": 18, "end": 343, "color": "#3b82f6"},
+        {"name": "RBS (Receptor-Binding Site)", "start": 130, "end": 230, "color": "#f59e0b"},
+        {"name": "Cleavage Site", "start": 344, "end": 346, "color": "#ef4444"},
+        {"name": "HA2 Subunit (Stem/Fusion)", "start": 347, "end": 566, "color": "#10b981"}
+      ],
+      "surveillance_codons": [153, 155, 156, 163, 187, 216, 222],
+      "key_variants": {
+        "6B.1A.5a.2a": [155, 156],
+        "5a.2a.1": [163, 187]
+      }
+    },
+    "influenza-b": {
+      "protein": "Hemagglutinin",
+      "gene": "ha",
+      "pdb_id": "4HMG",
+      "length": 584,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 15, "color": "#64748b"},
+        {"name": "HA1 Subunit", "start": 16, "end": 345, "color": "#3b82f6"},
+        {"name": "RBS (Receptor-Binding Site)", "start": 130, "end": 230, "color": "#f59e0b"},
+        {"name": "HA2 Subunit (Stem/Fusion)", "start": 346, "end": 584, "color": "#10b981"}
+      ],
+      "surveillance_codons": [129, 133, 180, 197, 199],
+      "key_variants": {
+        "V1A.3a.2": [133, 197]
+      }
+    },
+    "rsv": {
+      "protein": "Fusion Glycoprotein (F)",
+      "gene": "F",
+      "pdb_id": "4HMG",
+      "length": 574,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 25, "color": "#64748b"},
+        {"name": "F2 Subunit", "start": 26, "end": 109, "color": "#3b82f6"},
+        {"name": "p27 Peptide", "start": 110, "end": 136, "color": "#ef4444"},
+        {"name": "F1 Subunit (Fusion)", "start": 137, "end": 574, "color": "#10b981"}
+      ],
+      "surveillance_codons": [66, 67, 102, 211, 232, 276],
+      "key_variants": {
+        "RSV-A ON1": [211, 232]
+      }
+    },
+    "mpox": {
+      "protein": "Envelope Protein A35R",
+      "gene": "A35R",
+      "pdb_id": "7KRR",
+      "length": 182,
+      "domains": [
+        {"name": "Transmembrane Region", "start": 1, "end": 35, "color": "#64748b"},
+        {"name": "Extracellular EEV Domain", "start": 36, "end": 182, "color": "#3b82f6"}
+      ],
+      "surveillance_codons": [37, 54, 78, 120],
+      "key_variants": {
+        "Clade IIb": [54],
+        "Clade Ib": [37, 78]
+      }
     }
   }
 }
