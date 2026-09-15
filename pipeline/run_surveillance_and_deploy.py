@@ -26,14 +26,30 @@ from pipeline.sync_registry import inspect_pathogen_target, main as crawl_regist
 
 def run_full_pipeline(
     pathogen_id: str = "sars-cov-2",
-    gene: str = "S",
+    gene: Optional[str] = None,
     max_taxa: int = 400,
     deploy: bool = True,
     broadcast: bool = False,
 ):
+    # Lookup registry parameters if gene not explicitly passed
+    reg_path = "config/pathogen_registry.json"
+    focal_protein = "Spike Glycoprotein"
+    if os.path.exists(reg_path):
+        with open(reg_path, "r") as rf:
+            reg_data = json.load(rf)
+            for p in reg_data.get("pathogens", []):
+                if p.get("id") == pathogen_id:
+                    if not gene:
+                        gene = p.get("default_gene", "S")
+                    focal_protein = p.get("focal_protein", focal_protein)
+                    break
+    if not gene:
+        gene = "S"
+
     print("=" * 80)
     print(f"NEXTGEN SURVEILLANCE: LOCAL INGESTION, ANALYSIS & STATIC DEPLOYMENT")
-    print(f"Target Pathogen: {pathogen_id} (Gene: {gene}) | Deploy to GH Pages: {deploy}")
+    print(f"Target Pathogen: {pathogen_id} (Gene: {gene}, Protein: {focal_protein})")
+    print(f"Deploy to GH Pages: {deploy} | Live Broadcast: {broadcast}")
     print("=" * 80)
 
     # 1. Sync & Collapse Sequences
@@ -42,7 +58,7 @@ def run_full_pipeline(
     alignment_path = sync_stats["collapsed_fasta"]
     metadata_path = sync_stats["collapsed_metadata"]
 
-    # Special handling for SARS-CoV-2 spike extraction if whole-genome
+    # Special handling for in-frame alignments if pre-computed
     if pathogen_id == "sars-cov-2" and os.path.exists("data/sars-cov-2/spike_alignment.fasta"):
         alignment_path = "data/sars-cov-2/spike_alignment.fasta"
     elif pathogen_id == "avian-flu-h5n1" and os.path.exists("data/avian-flu-h5n1/ha_inframe_alignment.fasta"):
@@ -67,6 +83,7 @@ def run_full_pipeline(
         metadata_path=f"data/{pathogen_id}/chronaeon_work/classified.csv",
         output_dir=f"data/{pathogen_id}",
         gene=gene,
+        protein_name=focal_protein,
         n_permutations=30,
         time_points=40,
     )
@@ -86,12 +103,7 @@ def run_full_pipeline(
     # 6. Build Static Pages and Push to GitHub Pages
     if deploy:
         print("\n[Step 6/6] Compiling Static SvelteKit Dashboard and Pushing to GitHub Pages...")
-        build_proc = subprocess.run(["npm", "run", "build"], capture_output=True, text=True)
-        if build_proc.returncode != 0:
-            print(f"[Error] npm run build failed:\n{build_proc.stderr}")
-            sys.exit(1)
-        print("Static site build succeeded. Running deploy_gh_pages.sh...")
-        subprocess.run(["bash", "pipeline/deploy_gh_pages.sh"])
+        subprocess.run(["bash", "pipeline/deploy_gh_pages.sh"], check=True)
     else:
         print("\n[Step 6/6] Static build skipped (pass --deploy to build and publish).")
 
@@ -102,27 +114,41 @@ def run_full_pipeline(
         send_email_digest(f"static/data/{pathogen_id}/delta_report.json")
 
     print("\n" + "=" * 80)
-    print("SURVEILLANCE WORKFLOW COMPLETED SUCCESSFULLY!")
+    print(f"SURVEILLANCE WORKFLOW COMPLETED SUCCESSFULLY FOR {pathogen_id}!")
     print("=" * 80)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Master Surveillance Orchestrator & Static Host Deployer")
     parser.add_argument("-p", "--pathogen", default="sars-cov-2", help="Target pathogen ID")
-    parser.add_argument("-g", "--gene", default="S", help="Target gene identifier")
+    parser.add_argument("-g", "--gene", default=None, help="Target gene identifier")
     parser.add_argument("-m", "--max-taxa", type=int, default=300, help="Taxa subsampling cap for fast runs")
+    parser.add_argument("--all", action="store_true", help="Run surveillance across all active Tier-1 pathogens")
     parser.add_argument("--deploy", action="store_true", default=True, help="Build and push to gh-pages branch")
     parser.add_argument("--no-deploy", dest="deploy", action="store_false", help="Skip deployment push")
     parser.add_argument("--broadcast", action="store_true", help="Send live Slack and Email broadcasts")
 
     args = parser.parse_args()
-    run_full_pipeline(
-        pathogen_id=args.pathogen,
-        gene=args.gene,
-        max_taxa=args.max_taxa,
-        deploy=args.deploy,
-        broadcast=args.broadcast,
-    )
+
+    if args.all:
+        targets = ["sars-cov-2", "avian-flu-h5n1"]
+        for idx, target in enumerate(targets):
+            is_last = idx == len(targets) - 1
+            run_full_pipeline(
+                pathogen_id=target,
+                gene=None,
+                max_taxa=args.max_taxa,
+                deploy=args.deploy if is_last else False,
+                broadcast=args.broadcast,
+            )
+    else:
+        run_full_pipeline(
+            pathogen_id=args.pathogen,
+            gene=args.gene,
+            max_taxa=args.max_taxa,
+            deploy=args.deploy,
+            broadcast=args.broadcast,
+        )
 
 
 if __name__ == "__main__":
