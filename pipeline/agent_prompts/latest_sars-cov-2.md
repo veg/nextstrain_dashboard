@@ -19,324 +19,16 @@ Input Data Context:
   "date": "2026-09-14",
   "pathogen_id": "sars-cov-2",
   "alert_level": "Tier-1 High Velocity Sweep",
-  "newly_confirmed_sweeps": [
-    {
-      "codon": 3,
-      "peak_velocity": 0.0106,
-      "peak_date": 2022.1174,
-      "auc": 0.0049,
-      "p_perm": 0.0476,
-      "r2_wave": 0.5848
-    },
-    {
-      "codon": 22,
-      "peak_velocity": 0.0092,
-      "peak_date": 2024.8349,
-      "auc": 0.0046,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1583
-    },
-    {
-      "codon": 52,
-      "peak_velocity": 0.0266,
-      "peak_date": 2023.7026,
-      "auc": 0.0123,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1228
-    },
-    {
-      "codon": 59,
-      "peak_velocity": 0.0104,
-      "peak_date": 2024.8349,
-      "auc": 0.0048,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1378
-    },
-    {
-      "codon": 83,
-      "peak_velocity": 0.0241,
-      "peak_date": 2023.0232,
-      "auc": 0.0121,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1582
-    },
-    {
-      "codon": 146,
-      "peak_velocity": 0.0193,
-      "peak_date": 2023.0232,
-      "auc": 0.0092,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1387
-    },
-    {
-      "codon": 176,
-      "peak_velocity": 0.0351,
-      "peak_date": 2024.8349,
-      "auc": 0.0154,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1366
-    },
-    {
-      "codon": 183,
-      "peak_velocity": 0.0146,
-      "peak_date": 2023.0232,
-      "auc": 0.0068,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1461
-    },
-    {
-      "codon": 184,
-      "peak_velocity": 0.0134,
-      "peak_date": 2024.8349,
-      "auc": 0.0061,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1373
-    },
-    {
-      "codon": 186,
-      "peak_velocity": 0.02,
-      "peak_date": 2025.2878,
-      "auc": 0.009,
-      "p_perm": 0.0476,
-      "r2_wave": 0.0301
-    },
-    {
-      "codon": 213,
-      "peak_velocity": 0.0156,
-      "peak_date": 2023.0232,
-      "auc": 0.0108,
-      "p_perm": 0.0476,
-      "r2_wave": 0.2167
-    },
-    {
-      "codon": 339,
-      "peak_velocity": 0.0062,
-      "peak_date": 2021.8909,
-      "auc": 0.0066,
-      "p_perm": 0.0476,
-      "r2_wave": 0.7159
-    },
-    {
-      "codon": 346,
-      "peak_velocity": 0.0103,
-      "peak_date": 2021.8909,
-      "auc": 0.0122,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1422
-    },
-    {
-      "codon": 455,
-      "peak_velocity": 0.0139,
-      "peak_date": 2023.7026,
-      "auc": 0.0075,
-      "p_perm": 0.0476,
-      "r2_wave": 0.281
-    },
-    {
-      "codon": 456,
-      "peak_velocity": 0.0047,
-      "peak_date": 2024.6085,
-      "auc": 0.0044,
-      "p_perm": 0.0476,
-      "r2_wave": 0.4404
-    },
-    {
-      "codon": 475,
-      "peak_velocity": 0.0083,
-      "peak_date": 2025.2878,
-      "auc": 0.0053,
-      "p_perm": 0.0476,
-      "r2_wave": 0.0981
-    },
-    {
-      "codon": 478,
-      "peak_velocity": 0.0109,
-      "peak_date": 2023.2497,
-      "auc": 0.013,
-      "p_perm": 0.0476,
-      "r2_wave": 0.2142
-    },
-    {
-      "codon": 486,
-      "peak_velocity": 0.0088,
-      "peak_date": 2022.3438,
-      "auc": 0.0056,
-      "p_perm": 0.0476,
-      "r2_wave": 0.5551
-    },
-    {
-      "codon": 519,
-      "peak_velocity": 0.0092,
-      "peak_date": 2022.5703,
-      "auc": 0.0041,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1066
-    },
-    {
-      "codon": 529,
-      "peak_velocity": 0.0167,
-      "peak_date": 2024.8349,
-      "auc": 0.0073,
-      "p_perm": 0.0476,
-      "r2_wave": 0.138
-    },
-    {
-      "codon": 658,
-      "peak_velocity": 0.0075,
-      "peak_date": 2022.5703,
-      "auc": 0.0038,
-      "p_perm": 0.0476,
-      "r2_wave": 0.0721
-    },
-    {
-      "codon": 940,
-      "peak_velocity": 0.0051,
-      "peak_date": 2022.5703,
-      "auc": 0.0023,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1066
-    },
-    {
-      "codon": 950,
-      "peak_velocity": 0.0127,
-      "peak_date": 2021.438,
-      "auc": 0.0068,
-      "p_perm": 0.0476,
-      "r2_wave": 0.127
-    },
-    {
-      "codon": 1086,
-      "peak_velocity": 0.0232,
-      "peak_date": 2024.1555,
-      "auc": 0.0182,
-      "p_perm": 0.0476,
-      "r2_wave": 0.2864
-    },
-    {
-      "codon": 1091,
-      "peak_velocity": 0.0203,
-      "peak_date": 2020.0792,
-      "auc": 0.0064,
-      "p_perm": 0.0476,
-      "r2_wave": 0.0336
-    },
-    {
-      "codon": 1104,
-      "peak_velocity": 0.0089,
-      "peak_date": 2024.1555,
-      "auc": 0.0104,
-      "p_perm": 0.0476,
-      "r2_wave": 0.1102
-    },
-    {
-      "codon": 1150,
-      "peak_velocity": 0.0374,
-      "peak_date": 2023.9291,
-      "auc": 0.0187,
-      "p_perm": 0.0476,
-      "r2_wave": 0.4059
-    }
-  ],
+  "newly_confirmed_sweeps": [],
   "accelerations": [],
-  "new_clock_communities": [
-    {
-      "id": 0,
-      "rate": 0.001,
-      "r2": 0.0206,
-      "tmrca": NaN,
-      "taxa_count": 130,
-      "color": "#3b82f6",
-      "timespan": [
-        2023.5699,
-        2026.6466
-      ]
-    },
-    {
-      "id": 1,
-      "rate": 0.001,
-      "r2": 0.7606,
-      "tmrca": NaN,
-      "taxa_count": 38,
-      "color": "#10b981",
-      "timespan": [
-        2021.8904,
-        2026.5918
-      ]
-    },
-    {
-      "id": 2,
-      "rate": 0.0033,
-      "r2": 0.8037,
-      "tmrca": NaN,
-      "taxa_count": 132,
-      "color": "#f59e0b",
-      "timespan": [
-        2020.0792,
-        2023.8685
-      ]
-    }
-  ],
-  "new_quarantined_outliers": [
-    {
-      "strain": "ZAF/Wuhan-Hu-1/2024",
-      "date": 2024.2077,
-      "community": 1,
-      "divergence": 0.0106,
-      "residual": 0.0062,
-      "studentized_residual": 3.5322,
-      "is_sus": true,
-      "classification": "sequencing_artifact",
-      "reasons": [
-        "Extreme molecular clock departure (|Z|=3.53 >= 3.5)"
-      ]
-    },
-    {
-      "strain": "OZ536347",
-      "date": 2026.5918,
-      "community": 1,
-      "divergence": 0.0082,
-      "residual": 0.0071,
-      "studentized_residual": 3.9666,
-      "is_sus": true,
-      "classification": "sequencing_artifact",
-      "reasons": [
-        "Extreme molecular clock departure (|Z|=3.97 >= 3.5)"
-      ]
-    },
-    {
-      "strain": "EGY/OmicronVaccinepassage5/2022",
-      "date": 2022.7863,
-      "community": 2,
-      "divergence": 0.0021,
-      "residual": -0.0049,
-      "studentized_residual": -3.4871,
-      "is_sus": true,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=3.49)"
-      ]
-    },
-    {
-      "strain": "NGA/AKS009/2022",
-      "date": 2022.375,
-      "community": 2,
-      "divergence": 0.0016,
-      "residual": -0.0041,
-      "studentized_residual": -2.8966,
-      "is_sus": false,
-      "classification": "genuine_saltation",
-      "reasons": [
-        "Statistically significant clock deviation (|Z|=2.90)"
-      ]
-    }
-  ],
+  "new_clock_communities": [],
+  "new_quarantined_outliers": [],
   "active_codons_summary": [
     "Spike Glycoprotein 3",
     "Spike Glycoprotein 22",
     "Spike Glycoprotein 52",
     "Spike Glycoprotein 59",
     "Spike Glycoprotein 83",
-    "Spike Glycoprotein 146",
     "Spike Glycoprotein 176",
     "Spike Glycoprotein 183",
     "Spike Glycoprotein 184",
@@ -346,20 +38,14 @@ Input Data Context:
     "Spike Glycoprotein 346",
     "Spike Glycoprotein 455",
     "Spike Glycoprotein 456",
-    "Spike Glycoprotein 475",
     "Spike Glycoprotein 478",
-    "Spike Glycoprotein 486",
-    "Spike Glycoprotein 519",
     "Spike Glycoprotein 529",
-    "Spike Glycoprotein 658",
-    "Spike Glycoprotein 940",
     "Spike Glycoprotein 950",
     "Spike Glycoprotein 1086",
-    "Spike Glycoprotein 1091",
     "Spike Glycoprotein 1104",
     "Spike Glycoprotein 1150"
   ],
-  "executive_summary": "Active positive sweep velocity acceleration detected at Spike Glycoprotein codons [3, 22, 52]. Instantaneous selection intensity reached 0.0374 subs/site/yr with 4 quarantined LOOCV outlier(s)."
+  "executive_summary": "Nominal evolutionary trajectory maintained across 3 AutoClock communities. No acute positive sweep velocity inflections detected in current surveillance horizon."
 }
 
 - AutoClock Rate Communities:
@@ -406,83 +92,83 @@ Input Data Context:
 [
   {
     "codon": 3,
-    "peak_velocity": 0.0106,
-    "peak_date": 2022.1174,
-    "auc": 0.0049,
-    "p_perm": 0.0476,
-    "r2_wave": 0.5848
+    "peak_velocity": 0.0121,
+    "peak_date": 2022.2684,
+    "auc": 0.005,
+    "p_perm": 0.0323,
+    "r2_wave": 0.5172
   },
   {
     "codon": 22,
-    "peak_velocity": 0.0092,
-    "peak_date": 2024.8349,
-    "auc": 0.0046,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1583
+    "peak_velocity": 0.0125,
+    "peak_date": 2024.7943,
+    "auc": 0.0048,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1633
   },
   {
     "codon": 52,
-    "peak_velocity": 0.0266,
-    "peak_date": 2023.7026,
-    "auc": 0.0123,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1228
+    "peak_velocity": 0.0284,
+    "peak_date": 2023.6155,
+    "auc": 0.0141,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1361
   },
   {
     "codon": 59,
-    "peak_velocity": 0.0104,
-    "peak_date": 2024.8349,
-    "auc": 0.0048,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1378
+    "peak_velocity": 0.0149,
+    "peak_date": 2024.7943,
+    "auc": 0.0049,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1478
   },
   {
     "codon": 83,
-    "peak_velocity": 0.0241,
-    "peak_date": 2023.0232,
-    "auc": 0.0121,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1582
-  },
-  {
-    "codon": 146,
-    "peak_velocity": 0.0193,
-    "peak_date": 2023.0232,
-    "auc": 0.0092,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1387
+    "peak_velocity": 0.0289,
+    "peak_date": 2023.1103,
+    "auc": 0.0123,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1377
   },
   {
     "codon": 176,
-    "peak_velocity": 0.0351,
-    "peak_date": 2024.8349,
-    "auc": 0.0154,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1366
+    "peak_velocity": 0.0487,
+    "peak_date": 2024.7943,
+    "auc": 0.0161,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1483
   },
   {
     "codon": 183,
-    "peak_velocity": 0.0146,
-    "peak_date": 2023.0232,
-    "auc": 0.0068,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1461
+    "peak_velocity": 0.0172,
+    "peak_date": 2023.1103,
+    "auc": 0.0069,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1257
   },
   {
     "codon": 184,
-    "peak_velocity": 0.0134,
-    "peak_date": 2024.8349,
-    "auc": 0.0061,
-    "p_perm": 0.0476,
-    "r2_wave": 0.1373
+    "peak_velocity": 0.019,
+    "peak_date": 2024.7943,
+    "auc": 0.0062,
+    "p_perm": 0.0323,
+    "r2_wave": 0.1476
   },
   {
     "codon": 186,
-    "peak_velocity": 0.02,
-    "peak_date": 2025.2878,
-    "auc": 0.009,
-    "p_perm": 0.0476,
-    "r2_wave": 0.0301
+    "peak_velocity": 0.021,
+    "peak_date": 2025.2995,
+    "auc": 0.0113,
+    "p_perm": 0.0323,
+    "r2_wave": 0.0239
+  },
+  {
+    "codon": 213,
+    "peak_velocity": 0.0193,
+    "peak_date": 2023.1103,
+    "auc": 0.011,
+    "p_perm": 0.0323,
+    "r2_wave": 0.2026
   }
 ]
 
@@ -595,8 +281,14 @@ Input Data Context:
   }
 ]
 
-- Historical Context (None):
-No previous dispatches recorded. This is the baseline surveillance briefing.
+- Historical Context (2026-09-14):
+# Pathogen Intelligence Briefing: SARS-CoV-2 Spike Glycoprotein
+**Date:** 2026-09-14 | **Surveillance Target:** SARS-CoV-2 (`sars-cov-2`) | **Alert Level:** Tier-1 High Velocity Sweep
+
+---
+
+### 1. Executive Alert
+A concentrated burst of instantaneous selection velocity $v_s(t)$ has been detected across receptor-binding domain (RBD) codons, led by [t=2024.8, codon=456] and [t=2024.8, codon=455] within sublineages KP.3 and JN.1 radiations. Positive sweep velocity reached $0.0374\text{ subs/site/year}$, displaying a 3.2-month lead time over empirical population prevalence curves. Immediate genomi...
 
 Generate an Intelligence Dispatch in markdown adhering to the 5-part structure:
 1. Executive Alert (1 concise paragraph highlighting new VOC/VOI risks or transmission jumps).
