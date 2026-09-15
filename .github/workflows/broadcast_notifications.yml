@@ -1,0 +1,56 @@
+name: Multi-Channel Broadcast Notifications
+
+on:
+  workflow_run:
+    workflows: ["Autonomous Agent Intelligence Generator"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      pathogen:
+        description: 'Pathogen to broadcast'
+        required: true
+        default: 'sars-cov-2'
+
+jobs:
+  broadcast:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Jinja2
+        run: pip install jinja2
+
+      - name: Dispatch Slack Block Kit Alert
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          PATHOGEN="${{ github.event.inputs.pathogen || 'sars-cov-2' }}"
+          DELTA_FILE="static/data/${PATHOGEN}/delta_report.json"
+          LATEST_DISPATCH=$(ls -t dispatches/*-${PATHOGEN}.md 2>/dev/null | head -n 1 || echo "")
+          
+          if [ -f "$DELTA_FILE" ]; then
+            python pipeline/broadcast/notify_slack.py --delta "$DELTA_FILE" --dispatch "$LATEST_DISPATCH"
+          fi
+
+      - name: Dispatch HTML Email Digest
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          ALERT_RECIPIENTS: ${{ secrets.ALERT_RECIPIENTS }}
+        run: |
+          PATHOGEN="${{ github.event.inputs.pathogen || 'sars-cov-2' }}"
+          DELTA_FILE="static/data/${PATHOGEN}/delta_report.json"
+          LATEST_DISPATCH=$(ls -t dispatches/*-${PATHOGEN}.md 2>/dev/null | head -n 1 || echo "")
+          
+          if [ -f "$DELTA_FILE" ]; then
+            python pipeline/broadcast/notify_email.py --delta "$DELTA_FILE" --dispatch "$LATEST_DISPATCH" --send
+          fi

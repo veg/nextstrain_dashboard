@@ -1,0 +1,44 @@
+{
+  "version": "1.0.0",
+  "structures": {
+    "sars-cov-2": {
+      "protein": "Spike Glycoprotein",
+      "gene": "S",
+      "pdb_id": "7KRR",
+      "length": 1273,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 13, "color": "#64748b"},
+        {"name": "NTD (N-Terminal Domain)", "start": 14, "end": 305, "color": "#0ea5e9"},
+        {"name": "RBD (Receptor-Binding Domain)", "start": 319, "end": 541, "color": "#f59e0b"},
+        {"name": "RBM (Receptor-Binding Motif)", "start": 437, "end": 508, "color": "#ef4444"},
+        {"name": "Furin / S1-S2 Cleavage", "start": 681, "end": 686, "color": "#ec4899"},
+        {"name": "S2 Core / Fusion Subunit", "start": 686, "end": 1273, "color": "#10b981"}
+      ],
+      "surveillance_codons": [452, 455, 456, 484, 486, 498, 501, 505, 681],
+      "key_variants": {
+        "BA.2.86": [339, 356, 403, 445, 450, 483, 484, 501, 505, 570, 681],
+        "JN.1": [455],
+        "KP.2": [456, 346],
+        "KP.3": [456, 486, 455]
+      }
+    },
+    "avian-flu-h5n1": {
+      "protein": "Hemagglutinin",
+      "gene": "ha",
+      "pdb_id": "4HMG",
+      "length": 566,
+      "domains": [
+        {"name": "Signal Peptide", "start": 1, "end": 16, "color": "#64748b"},
+        {"name": "HA1 Subunit", "start": 17, "end": 340, "color": "#3b82f6"},
+        {"name": "RBS (Receptor-Binding Site)", "start": 130, "end": 230, "color": "#f59e0b"},
+        {"name": "Cleavage Site (Polybasic)", "start": 341, "end": 346, "color": "#ef4444"},
+        {"name": "HA2 Subunit (Stem/Fusion)", "start": 347, "end": 566, "color": "#10b981"}
+      ],
+      "surveillance_codons": [137, 190, 193, 225, 226, 228, 318, 343],
+      "key_variants": {
+        "Clade 2.3.4.4b": [137, 190, 225, 228],
+        "Cattle Outbreak (B3.13)": [137, 343]
+      }
+    }
+  }
+}

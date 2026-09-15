@@ -1,0 +1,310 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-09-14T19:55:00Z",
+  "pathogens": [
+    {
+      "id": "sars-cov-2",
+      "name": "SARS-CoV-2 (COVID-19)",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/ncov/open/",
+      "s3_manifest_candidates": [
+        "files/ncov/open/global/6m/",
+        "files/ncov/open/100k/",
+        "files/ncov/open/north-america/"
+      ],
+      "default_gene": "S",
+      "available_genes": ["S", "ORF1ab", "N", "M", "E", "ORF3a", "ORF7a", "ORF8"],
+      "focal_protein": "Spike Glycoprotein",
+      "pdb_id": "7KRR",
+      "active": true
+    },
+    {
+      "id": "avian-flu-h5n1",
+      "name": "Avian Influenza A/H5N1 (Clade 2.3.4.4b)",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/avian-flu/h5n1/",
+      "s3_manifest_candidates": [
+        "files/workflows/avian-flu/h5n1/ha/",
+        "files/workflows/avian-flu/h5n1/andersen-lab/ha/",
+        "files/workflows/avian-flu/h5n1/ncbi/ha/"
+      ],
+      "default_gene": "ha",
+      "available_genes": ["ha", "na", "pb2", "pb1", "pa", "np", "mp", "ns"],
+      "focal_protein": "Hemagglutinin (HA)",
+      "pdb_id": "4HMG",
+      "active": true
+    },
+    {
+      "id": "influenza-h3n2",
+      "name": "Seasonal Influenza A/H3N2",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_manifest_candidates": [
+        "files/workflows/seasonal-flu/"
+      ],
+      "default_gene": "ha",
+      "available_genes": ["ha", "na"],
+      "focal_protein": "Hemagglutinin (HA)",
+      "pdb_id": "4HMG",
+      "active": true
+    },
+    {
+      "id": "influenza-h1n1pdm",
+      "name": "Seasonal Influenza A/H1N1pdm",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_manifest_candidates": [
+        "files/workflows/seasonal-flu/"
+      ],
+      "default_gene": "ha",
+      "available_genes": ["ha", "na"],
+      "focal_protein": "Hemagglutinin (HA)",
+      "pdb_id": "1RU7",
+      "active": true
+    },
+    {
+      "id": "influenza-b",
+      "name": "Seasonal Influenza B (Victoria)",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/seasonal-flu/",
+      "s3_manifest_candidates": [
+        "files/workflows/seasonal-flu/"
+      ],
+      "default_gene": "ha",
+      "available_genes": ["ha", "na"],
+      "focal_protein": "Hemagglutinin (HA)",
+      "pdb_id": "4FQJ",
+      "active": true
+    },
+    {
+      "id": "rsv",
+      "name": "Respiratory Syncytial Virus (RSV A & B)",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/rsv/",
+      "s3_manifest_candidates": [
+        "files/workflows/rsv/"
+      ],
+      "default_gene": "F",
+      "available_genes": ["F", "G"],
+      "focal_protein": "Fusion Glycoprotein (F)",
+      "pdb_id": "4JHW",
+      "active": true
+    },
+    {
+      "id": "mpox",
+      "name": "Mpox Virus (Clade I, Ib & IIb)",
+      "tier": 1,
+      "cadence": "daily",
+      "s3_workflow_prefix": "files/workflows/mpox/",
+      "s3_manifest_candidates": [
+        "files/workflows/mpox/"
+      ],
+      "default_gene": "A35R",
+      "available_genes": ["A35R", "B21R", "A29L"],
+      "focal_protein": "Envelope Protein A35R",
+      "pdb_id": "4G9O",
+      "active": true
+    },
+    {
+      "id": "dengue",
+      "name": "Dengue Virus (DENV 1-4)",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/dengue/",
+      "s3_manifest_candidates": [
+        "files/workflows/dengue/"
+      ],
+      "default_gene": "E",
+      "available_genes": ["E", "polyprotein"],
+      "focal_protein": "Envelope Protein (E)",
+      "pdb_id": "1UZG",
+      "active": true
+    },
+    {
+      "id": "zika",
+      "name": "Zika Virus",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/zika/",
+      "s3_manifest_candidates": [
+        "files/workflows/zika/"
+      ],
+      "default_gene": "E",
+      "available_genes": ["E", "polyprotein"],
+      "focal_protein": "Envelope Protein (E)",
+      "pdb_id": "5IRE",
+      "active": true
+    },
+    {
+      "id": "chikungunya",
+      "name": "Chikungunya Virus",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/chikv/",
+      "s3_manifest_candidates": [
+        "files/workflows/chikv/"
+      ],
+      "default_gene": "E1",
+      "available_genes": ["E1", "E2"],
+      "focal_protein": "Envelope Glycoprotein E1",
+      "pdb_id": "3N44",
+      "active": true
+    },
+    {
+      "id": "yellow-fever",
+      "name": "Yellow Fever Virus",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/yellow-fever/",
+      "s3_manifest_candidates": [
+        "files/workflows/yellow-fever/"
+      ],
+      "default_gene": "E",
+      "available_genes": ["E", "polyprotein"],
+      "focal_protein": "Envelope Protein (E)",
+      "pdb_id": "6EPK",
+      "active": true
+    },
+    {
+      "id": "west-nile",
+      "name": "West Nile Virus",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/wnv/",
+      "s3_manifest_candidates": [
+        "files/workflows/wnv/"
+      ],
+      "default_gene": "E",
+      "available_genes": ["E", "polyprotein"],
+      "focal_protein": "Envelope Protein (E)",
+      "pdb_id": "2HG0",
+      "active": true
+    },
+    {
+      "id": "enterovirus-d68",
+      "name": "Enterovirus D68",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/",
+      "s3_manifest_candidates": [
+        "files/workflows/enterovirus-d68/"
+      ],
+      "default_gene": "VP1",
+      "available_genes": ["VP1"],
+      "focal_protein": "Capsid Protein VP1",
+      "pdb_id": "4WM8",
+      "active": true
+    },
+    {
+      "id": "poliovirus",
+      "name": "Poliovirus (Types 1-3)",
+      "tier": 2,
+      "cadence": "biweekly",
+      "s3_workflow_prefix": "files/workflows/",
+      "s3_manifest_candidates": [
+        "files/workflows/polio/"
+      ],
+      "default_gene": "VP1",
+      "available_genes": ["VP1"],
+      "focal_protein": "Capsid Protein VP1",
+      "pdb_id": "1HXS",
+      "active": true
+    },
+    {
+      "id": "ebola",
+      "name": "Ebola Virus (Zaire, Sudan, Bundibugyo)",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/ebola/",
+      "s3_manifest_candidates": [
+        "files/workflows/ebola/"
+      ],
+      "default_gene": "GP",
+      "available_genes": ["GP"],
+      "focal_protein": "Glycoprotein (GP)",
+      "pdb_id": "5JQ3",
+      "active": true
+    },
+    {
+      "id": "lassa",
+      "name": "Lassa Virus",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/lassa/",
+      "s3_manifest_candidates": [
+        "files/workflows/lassa/"
+      ],
+      "default_gene": "GPC",
+      "available_genes": ["GPC", "NP", "L"],
+      "focal_protein": "Glycoprotein Precursor (GPC)",
+      "pdb_id": "5VK2",
+      "active": true
+    },
+    {
+      "id": "rabies",
+      "name": "Rabies Lyssavirus",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/rabies/",
+      "s3_manifest_candidates": [
+        "files/workflows/rabies/"
+      ],
+      "default_gene": "G",
+      "available_genes": ["G"],
+      "focal_protein": "Glycoprotein (G)",
+      "pdb_id": "6LGX",
+      "active": true
+    },
+    {
+      "id": "measles",
+      "name": "Measles Virus",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/measles/",
+      "s3_manifest_candidates": [
+        "files/workflows/measles/"
+      ],
+      "default_gene": "H",
+      "available_genes": ["H", "F"],
+      "focal_protein": "Hemagglutinin (H)",
+      "pdb_id": "2ZB5",
+      "active": true
+    },
+    {
+      "id": "mumps",
+      "name": "Mumps Virus",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/mumps/",
+      "s3_manifest_candidates": [
+        "files/workflows/mumps/"
+      ],
+      "default_gene": "HN",
+      "available_genes": ["HN", "F"],
+      "focal_protein": "Hemagglutinin-Neuraminidase (HN)",
+      "pdb_id": "5B2D",
+      "active": true
+    },
+    {
+      "id": "tuberculosis",
+      "name": "Mycobacterium tuberculosis (AMR Resistance)",
+      "tier": 3,
+      "cadence": "monthly",
+      "s3_workflow_prefix": "files/workflows/tb/",
+      "s3_manifest_candidates": [
+        "files/workflows/tb/"
+      ],
+      "default_gene": "rpoB",
+      "available_genes": ["rpoB", "katG", "gyrA", "inhA"],
+      "focal_protein": "RNA Polymerase Beta Subunit (RpoB)",
+      "pdb_id": "5UAC",
+      "active": true
+    }
+  ]
+}
