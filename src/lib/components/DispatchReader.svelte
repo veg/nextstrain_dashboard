@@ -390,6 +390,9 @@ Genomic sequences and phylogenetic trees are ingested from the **[Nextstrain Pro
   }
   :global(.katex) {
     font-size: 0.88em !important;
-    color: #e2e8f0;
+    color: #e2e8f0 !important;
+  }
+  :global(.katex .katex-html) {
+    color: #e2e8f0 !important;
   }
 </style>
